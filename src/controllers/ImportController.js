@@ -1,0 +1,80 @@
+const crypto = require('crypto');
+const connection = require('../database/connection');
+
+module.exports = {   
+    async importServ (request, response) {
+        
+    },    
+}
+
+
+    /*    const { 
+            id_user,
+            nome_user,
+            email_user,
+            nasc_user,
+            estcivil_user,
+            identidade_user,
+            orgemissor_user,
+            dat_expedicao,
+            cpf_user,
+            logradouro,
+            bairro,
+            cep,
+            estado_resid,
+            cidade_resid,
+            fone_resid,
+            fone_celular,
+            id_matricula,
+            secretaria,
+            dat_emissao,
+            cargo,
+            funcao,
+            salario,
+            senha_user,
+            sld_disponivel,
+            tot_compras,
+            vlr_totcompras,
+            tipo_user,
+            tip_cadastro,
+            cod_titular,
+            grau_parentesco,
+            cad_resp,
+            dat_cadastro,
+            status_user,
+            obs_bloqueio,
+            org_secretaria,
+            mes_ferias,
+            conjuge,
+            nascConjuge,
+            nomFilho1,
+            nasFilho1,
+            nomFilho2,
+            nasFilho2,
+            nomFilho3,
+            nasFilho3,
+            nomFilho4,
+            nasFilho4,
+            nomFilho5,
+            nasFilho5,
+            nomFilho6,
+            nasFilho6,
+            locTrabalho,
+            fonTrabalho,
+            datRecadastro,
+            salBase,
+            status_atual,
+            obs_status,
+            dat_status,
+            inf_adicional,
+            bcoConta,
+            ageConta,
+            ctaConta,
+            tipConta,
+            staExcecao,
+            dia_pagto } = require('../database/json/associados.json');
+    
+            
+
+     },    
+}; */
