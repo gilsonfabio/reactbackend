@@ -16,6 +16,11 @@ const MailController = require('./controllers/MailController');
 const ImportController = require('./controllers/ImportController');
 const ParametrosController = require('./controllers/ParametrosController');
 
+routes.get('/', (request, response) => {
+    response.json({
+        message: 'Bem-vindo ao servidor Sindicaldas!',
+    });
+});
 
 routes.get('/users', UsersController.index);
 routes.get('/signIn/:email/:password', UsersController.signIn);
