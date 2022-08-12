@@ -15,6 +15,8 @@ const FiliacaoController = require('./controllers/FiliacaoController');
 const MailController = require('./controllers/MailController');
 const ImportController = require('./controllers/ImportController');
 const ParametrosController = require('./controllers/ParametrosController');
+const CargosController = require('./controllers/CargosController');
+const ParcelasController = require('./controllers/ParcelasController');
 
 routes.get('/', (request, response) => {
     response.json({
@@ -74,6 +76,10 @@ routes.get('/taxAdmin', TxaAdminController.index);
 routes.post('/newtaxadmin', TxaAdminController.create);
 routes.get('/alttaxadmin/:idTxa', TxaAdminController.searchTxaAdm);
 
+routes.get('/cargos', CargosController.index);
+routes.post('/newcargo', CargosController.create);
+routes.get('/altcargo/:idCrg', CargosController.searchCargo);
+
 routes.get('/compras', ComprasController.index);
 routes.post('/newcompra', ComprasController.create);
 routes.get('/altcompra/:idCmp', ComprasController.searchCompras);
@@ -103,5 +109,7 @@ routes.get('/newinformacao/', UsersController.createInf);
 routes.get('/altinformacao/:idUsr/:idInf', UsersController.updInfor);
 
 routes.get('/pdfSrvContrato/:srvId', UsersController.srvContratos);
+
+routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
 
 module.exports = routes;

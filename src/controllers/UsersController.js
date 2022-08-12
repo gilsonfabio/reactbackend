@@ -1,3 +1,4 @@
+const { Console } = require('console');
 const crypto = require('crypto');
 const { addListener } = require('../database/connection');
 const connection = require('../database/connection');
@@ -32,7 +33,7 @@ module.exports = {
             .where('usrMes', month)
             .where('usrAno', year)
             .join('servidores', 'usrCartao', 'usrSaldo.usrServ')
-            .select(['usrSaldo.*', 'servidores.usrNome', 'servidores.usrMatricula', 'servidores.usrId', 'servidores.usrStatus']);
+            .select(['usrSaldo.*', 'servidores.usrNome', 'servidores.usrMatricula', 'servidores.usrId', 'servidores.usrStatus', 'servidores.usrTipContrato']);
           
         if (!user) {
             return response.status(400).json({ error: 'Não encontrou servidor com este ID'});
@@ -165,7 +166,7 @@ module.exports = {
         var encodedVal = crypto.createHash('md5').update(senha).digest('hex');
         const user = await connection('servidores')
             .where('usrEmail', email)
-            .where('usrSenha', encodedVal)
+            .where('usrPassword', encodedVal)
             .select('usrId', 'usrNome')
             .first();
           
@@ -186,7 +187,7 @@ module.exports = {
         var encodedVal = crypto.createHash('md5').update(senha).digest('hex');
         const user = await connection('servidores')
             .where('usrCartao', id)
-            .where('usrSenha', encodedVal)
+            .where('usrPassword', encodedVal)
             .select('*')
             .first();
           
@@ -206,7 +207,7 @@ module.exports = {
         var encodedVal = crypto.createHash('md5').update(senha).digest('hex');
         const user = await connection('servidores')
             .where('usrCartao', id)
-            .where('usrSenha', encodedVal)
+            .where('usrPassword', encodedVal)
             .select('usrId', 'usrNome')
             .first();
           
@@ -226,7 +227,7 @@ module.exports = {
         var senha = crypto.createHash('md5').update(password).digest('hex');
         const user = await connection('servidores')
             .where('usrEmail', email)
-            .where('usrSenha', senha)
+            .where('usrPassword', senha)
             .select('usrId', 'usrNome')
             .first();
           
@@ -317,7 +318,7 @@ module.exports = {
 
         await connection('servidores').where('usrEmail', email)   
         .update({
-            usrSenha: senha,           
+            usrPassword: senha,           
         });
            
         return response.status(204).send();
@@ -557,9 +558,16 @@ module.exports = {
 
     async srvContratos (request, response) {
         let id = request.params.srvId;
+
+        //console.log('Servidor:',id)
+
         const user = await connection('servidores')
             .where('usrId', id)
-            .select('*')
+            .join('secretarias', 'secId', 'servidores.usrSecretaria')
+            .join('orgadmin', 'orgId', 'secretarias.secOrgAdm')
+            .join('cargos', 'crgId', 'servidores.usrCargo')            
+            .select(['servidores.*', 'secretarias.secDescricao', 'orgadmin.orgDescricao', 'cargos.crgDescricao'])
+            //.select('servidores.*')
             .first();
 
         if (!user) {
