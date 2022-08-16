@@ -18,6 +18,7 @@ const ParametrosController = require('./controllers/ParametrosController');
 const CargosController = require('./controllers/CargosController');
 const ParcelasController = require('./controllers/ParcelasController');
 const DownloadsController = require('./controllers/DownloadsController');
+const BairrosController = require('./controllers/BairrosController');
 
 routes.get('/', (request, response) => {
     response.json({
@@ -75,11 +76,17 @@ routes.get('/altplapagto/:idPgt', PlaPagtoController.searchPlaPagto);
 
 routes.get('/taxAdmin', TxaAdminController.index);
 routes.post('/newtaxadmin', TxaAdminController.create);
-routes.get('/alttaxadmin/:idTxa', TxaAdminController.searchTxaAdm);
+routes.put('/alttaxadmin/:idTxa', TxaAdminController.searchTxaAdm);
 
 routes.get('/cargos', CargosController.index);
 routes.post('/newcargo', CargosController.create);
-routes.get('/altcargo/:idCrg', CargosController.searchCargo);
+routes.put('/altcargo/:idCrg', CargosController.updCargo);
+routes.get('/searchCargo/:idCrg', BairrosController.searchCargo);
+
+routes.get('/bairros', BairrosController.index);
+routes.post('/newbairro', BairrosController.create);
+routes.put('/altbairro/:idBai', BairrosController.updBairro);
+routes.get('/searchBairro/:idBai', BairrosController.searchBairro);
 
 routes.get('/compras', ComprasController.index);
 routes.post('/newcompra', ComprasController.create);

@@ -26,4 +26,16 @@ module.exports = {
 
         return response.json(cargo);
     },    
+
+    async updCargo(request, response) {
+        let id = request.params.idBai;         
+        const { crgDescricao } = request.body;
+        
+        await connection('cargos').where('crgId', id)   
+        .update({
+            crgDescricao                  
+        });
+           
+        return response.status(204).send();
+    },
 };
