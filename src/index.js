@@ -20,9 +20,5 @@ app.use(express.json());
 app.use(routes);
 
 app.listen(port, () => {
-    console.info(`Server running...`, port);
-    response.json({
-        message: 'Bem-vindo ao Servidor Sindicaldas!',
-    });
-
+    console.info(`Server running...`, port)
 });
