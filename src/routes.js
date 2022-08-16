@@ -19,7 +19,7 @@ const ParcelasController = require('./controllers/ParcelasController');
 const DownloadsController = require('./controllers/DownloadsController');
 const BairrosController = require('./controllers/BairrosController');
 
-routes.post('/', (request, response) => {
+routes.get('/', (request, response) => {
     response.json({
         message: 'Bem-vindo ao servidor Sindicaldas!',
     });
