@@ -20,7 +20,7 @@ const DownloadsController = require('./controllers/DownloadsController');
 const BairrosController = require('./controllers/BairrosController');
 const InicioController = require('./controllers/InicioController');
 
-routes.get('/', InicioController.index);
+//routes.get('/', InicioController.index);
 
 routes.get('/users', UsersController.index);
 routes.get('/signIn/:email/:password', UsersController.signIn);
