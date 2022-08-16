@@ -64,6 +64,9 @@ module.exports = {
             cnvCep } = request.body;
         
         let status = "A";
+        
+        //var snhConvenio = crypto.createHash('md5').update(cnvPassword).digest('hex');
+        //var snhCancelamento = crypto.createHash('md5').update(cnvCanPassword).digest('hex');
             
         const [cnvId] = await connection('convenios').insert({
             cnvRazSocial, 
