@@ -18,12 +18,9 @@ const CargosController = require('./controllers/CargosController');
 const ParcelasController = require('./controllers/ParcelasController');
 const DownloadsController = require('./controllers/DownloadsController');
 const BairrosController = require('./controllers/BairrosController');
+const InicioController = require('./controllers/InicioController');
 
-routes.get('/', (request, response) => {
-    response.json({
-        message: 'Bem-vindo ao servidor Sindicaldas!',
-    });
-});
+routes.get('/', InicioController.index);
 
 routes.get('/users', UsersController.index);
 routes.get('/signIn/:email/:password', UsersController.signIn);
