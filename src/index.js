@@ -17,6 +17,13 @@ const port = process.env.PORT || 3333;
 const host = process.env.DATABASE_URL;
 
 app.use(express.json());
+
+app.use('/', (request, response) => {
+    response.json({
+        message: 'Bem-vindo ao servidor Sindicaldas!',
+    });
+});
+
 app.use(routes);
 
 app.listen(port, () => {
