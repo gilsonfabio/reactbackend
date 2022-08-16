@@ -28,7 +28,7 @@ module.exports = {
     },    
 
     async updCargo(request, response) {
-        let id = request.params.idBai;         
+        let id = request.params.idCrg;         
         const { crgDescricao } = request.body;
         
         await connection('cargos').where('crgId', id)   
