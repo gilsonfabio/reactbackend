@@ -13,7 +13,6 @@ const OrgaosController = require('./controllers/OrgaosController');
 const PdfsController = require('./controllers/PdfsController');
 const FiliacaoController = require('./controllers/FiliacaoController');
 const MailController = require('./controllers/MailController');
-const ImportController = require('./controllers/ImportController');
 const ParametrosController = require('./controllers/ParametrosController');
 const CargosController = require('./controllers/CargosController');
 const ParcelasController = require('./controllers/ParcelasController');
@@ -95,27 +94,19 @@ routes.get('/cmpConvenio/:idCnv', ComprasController.cmpConvenio);
 
 routes.get('/findCompras/:datVencto', ComprasController.cmpVencto);
 routes.get('/totCompras/:datVencto', ComprasController.totCompras);
-
 routes.get('/pdfVdaEmissao', PdfsController.pdfVdaEmissao);
 routes.get('/pdfVdaVenc/:dataInicial/:dataFinal', PdfsController.pdfVdaVenc);
-
 routes.get('/filiacao/:usrId', FiliacaoController.filiacao);
 routes.post('/newfiliacao', FiliacaoController.create);
 routes.get('/searchFiliacao/:idUsr/:idFil', FiliacaoController.searchFiliacao);
 routes.put('/altfiliacao/:idUsr/:idFil', FiliacaoController.updFiliacao);
-
 routes.get('/envEmail/:email', MailController.enviaEmail);
-
 routes.get('/parametros', ParametrosController.index);
 routes.put('/altparametros/:idPar', ParametrosController.updParam);
-             
-routes.get('/import', ImportController.importServ);
 routes.get('/usrAnterior/:cpfAnt', UsersController.usrAnterior);
-
 routes.get('/informacoes/:idUsr', UsersController.searchInf);
 routes.get('/newinformacao/', UsersController.createInf);
 routes.get('/altinformacao/:idUsr/:idInf', UsersController.updInfor);
-
 routes.get('/pdfSrvContrato/:srvId', UsersController.srvContratos);
 routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
 routes.get('/downloadTxt', DownloadsController.downTexto);
