@@ -18,11 +18,6 @@ const host = process.env.DATABASE_URL;
 
 app.use(express.json());
 
-app.get('/', function(req, res) {
-    res.send('hello world');
-});
-
-
 app.use(routes);
 
 app.listen(port, () => {
