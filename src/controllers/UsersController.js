@@ -565,8 +565,9 @@ module.exports = {
             .where('usrId', id)
             .join('secretarias', 'secId', 'servidores.usrSecretaria')
             .join('orgadmin', 'orgId', 'secretarias.secOrgAdm')
-            .join('cargos', 'crgId', 'servidores.usrCargo')            
-            .select(['servidores.*', 'secretarias.secDescricao', 'orgadmin.orgDescricao', 'cargos.crgDescricao'])
+            .join('cargos', 'crgId', 'servidores.usrCargo') 
+            .join('bairros', 'baiId', 'servidores.usrBairro')            
+            .select(['servidores.*', 'secretarias.secDescricao', 'orgadmin.orgDescricao', 'cargos.crgDescricao', 'bairros.baiDescricao'])
             //.select('servidores.*')
             .first();
 
