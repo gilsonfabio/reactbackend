@@ -19,7 +19,6 @@ module.exports = {
 
     async searchCargo (request, response) {
         let id = request.params.idCrg;
-
         const cargo = await connection('cargos')
         .where('crgId', id)
         .select('*');

@@ -24,7 +24,6 @@ routes.get('/', (request, response) => {
         message: 'Bem-vindo ao servidor Sindicaldas!',
     });
 });
-
 routes.get('/users', UsersController.index);
 routes.get('/signIn/:email/:password', UsersController.signIn);
 routes.post('/newuser', UsersController.create);
@@ -82,7 +81,6 @@ routes.get('/cargos', CargosController.index);
 routes.post('/newcargo', CargosController.create);
 routes.put('/altcargo/:idCrg', CargosController.updCargo);
 routes.get('/searchCargo/:idCrg', CargosController.searchCargo);
-
 routes.get('/bairros', BairrosController.index);
 routes.post('/newbairro', BairrosController.create);
 routes.put('/altbairro/:idBai', BairrosController.updBairro);
