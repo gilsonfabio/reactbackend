@@ -36,6 +36,7 @@ routes.get('/loginUsr/:cartao/:password', UsersController.loginUsr);
 routes.get('/verifUser/:cartao', UsersController.verifUser);
 routes.put('/altservidor/:idSrv', UsersController.updServidor);
 routes.get('/classUser/:search', UsersController.classUser);
+routes.get('/liberaUsr/:cartao', UsersController.liberaUsr);
 
 routes.get('/admin', AdminController.index);
 routes.get('/loginAdm/:email/:password', AdminController.signIn);

@@ -220,6 +220,28 @@ module.exports = {
         return response.json(user);
     },
 
+    async liberaUsr(request, response) {
+        let id = request.params.cartao;
+
+        //console.log(id);
+        //console.log(senha);
+
+        var encodedVal = crypto.createHash('md5').update(senha).digest('hex');
+        const user = await connection('servidores')
+            .where('usrCartao', id)
+            .select('*')
+            .first();
+          
+        if (!user) {
+            return response.status(400).json({ error: 'Não encontrou servidor com este ID'});
+        } 
+
+        //console.log(user);
+
+        return response.json(user);
+    },
+
+
     async busServ(request, response) {
         let id = request.params.cartao;
         let senha = request.params.password;
