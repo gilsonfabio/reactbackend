@@ -101,6 +101,26 @@ module.exports = {
             n++;  
             month++;  
         }
+        
+        if (user.length === 0) {
+            var n = 1; 
+            while (n <= 25) {
+                if (month === 13) { 
+                    month = 1
+                    year = year + 1
+                }  
+                
+                const [saldo] = await connection('usrSaldo').insert({
+                    usrServ: nroCartao,
+                    usrMes: month,
+                    usrAno: year,
+                    usrVlrDisponivel: vlrLimite,
+                    usrVlrUsado: vlrInicial,
+                });
+            }
+            n++;  
+            month++;  
+        }
 
         return response.status(200).json({ error: 'Servidor encontrado com sucesso!'});
     },
