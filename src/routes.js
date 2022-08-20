@@ -43,6 +43,7 @@ routes.get('/loginAdm/:email/:password', AdminController.signIn);
 routes.post('/newadmin', AdminController.create);
 routes.get('/searchAdmin/:idAdm', AdminController.searchAdmin);
 routes.put('/newSenhaAdmin/:emailAdmin', AdminController.updPassword);
+routes.put('/altadmin/:idAdm', AdminController.updAdmin);
 
 routes.get('/secretarias', SecretController.index);
 routes.post('/newsecretaria', SecretController.create);

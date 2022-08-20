@@ -63,7 +63,7 @@ module.exports = {
         let id = request.params.idAdm;
         const admin = await connection('administrator')
         .where('admId', id)        
-        .select(['*']);
+        .select('admId', 'admNome', 'admNivAcesso');
         
         return response.json(admin);
     },
@@ -79,6 +79,19 @@ module.exports = {
         await connection('administrator').where('admEmail', email)   
         .update({
             admSenha: senha,           
+        });
+           
+        return response.status(204).send();
+    },
+
+    async updAdmin(request, response) {
+        const { idAdm, admNome, admEmail, admNivAcesso } = request.body;        
+        await connection('administrator')
+        .where('admId', idAdm)   
+        .update({
+            admNome, 
+            admEmail,
+            admNivAcesso,        
         });
            
         return response.status(204).send();

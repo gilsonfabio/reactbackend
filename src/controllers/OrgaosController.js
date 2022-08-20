@@ -26,7 +26,6 @@ module.exports = {
         let status = 'A';
         const orgao = await connection('orgadmin')
         .where('orgId', id)
-        .where('orgStatus', status)
         .select('*');
 
         return response.json(orgao);
