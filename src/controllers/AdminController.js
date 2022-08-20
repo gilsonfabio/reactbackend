@@ -46,12 +46,14 @@ module.exports = {
     async create(request, response) {
         const { admNome, admSenha, admEmail, admNivAcesso } = request.body;
     
-        var senha = crypto.createHash('md5').update(usrSenha).digest('hex');
+        var senha = crypto.createHash('md5').update(admSenha).digest('hex');
+        var status = 'A';
         const [admId] = await connection('administrator').insert({
             admNome, 
             admSenha: senha, 
             admEmail,
-            admNivAcesso
+            admNivAcesso,
+            admStatus: status
         });
            
         return response.json({admId});

@@ -109,6 +109,7 @@ routes.get('/newinformacao/', UsersController.createInf);
 routes.get('/altinformacao/:idUsr/:idInf', UsersController.updInfor);
 routes.get('/pdfSrvContrato/:srvId', UsersController.srvContratos);
 routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
+
 routes.get('/downloadTxt', DownloadsController.downTexto);
 
 module.exports = routes;
