@@ -85,7 +85,7 @@ module.exports = {
                 parStaParcela: staParcela,                
             });
             
-            console.log(i);
+            //console.log(i);
         
         }
         
