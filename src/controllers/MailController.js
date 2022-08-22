@@ -22,7 +22,7 @@ module.exports = {
             to: emailUsuario,
             subject: 'test sendmail',
             html: `<p>Olá, ${nomeUsuario}, </br></p><p>Você solicitou um email de recuperação de senha.</p></br> <p>Favor clicar no link abaixo para redefinir sua senha.</p></br>
-            <p><a href="http://10.111.139.131:3000/NewPassword/:${emailUsuario}">Link de Recuperação de Senha</a></p>`,
+            <p><a href="https://sindicaldas.com.br/AltPassword/${emailUsuario}">Link de Recuperação de Senha</a></p>`,
         }, function(err, reply) {
             //console.log(err && err.stack);
             //console.dir(reply);

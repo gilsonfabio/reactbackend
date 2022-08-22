@@ -28,7 +28,7 @@ routes.get('/users', UsersController.index);
 routes.get('/signIn/:email/:password', UsersController.signIn);
 routes.post('/newuser', UsersController.create);
 routes.get('/searchUser/:idUsr', UsersController.searchUser);
-routes.put('/newpassword/:emailUsuario', UsersController.updPassword);
+routes.put('/updPassword/:emailUsuario', UsersController.updPassword);
 routes.get('/verUsuario/:email', UsersController.searchEmail);
 routes.get('/findUser/:cartao', UsersController.findUser);
 routes.get('/busServ/:cartao/:password', UsersController.busServ);

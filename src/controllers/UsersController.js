@@ -361,11 +361,11 @@ module.exports = {
 
     async updPassword(request, response) {
         let email = request.params.emailUsuario;         
-        const { password } = request.body;
+        const { newPassword } = request.body;
         
         let datUpdate = new Date();
 
-        var senha = crypto.createHash('md5').update(password).digest('hex');
+        var senha = crypto.createHash('md5').update(newPassword).digest('hex');
 
         await connection('servidores').where('usrEmail', email)   
         .update({
