@@ -97,9 +97,9 @@ module.exports = {
                     usrVlrDisponivel: vlrLimite,
                     usrVlrUsado: vlrInicial,
                 });
-            }
-            n++;  
-            month++;  
+                n++;  
+                month++;
+            }      
         }
 
         var year = datProcess.getFullYear();
@@ -129,9 +129,9 @@ module.exports = {
                     usrVlrDisponivel: vlrLimite,
                     usrVlrUsado: vlrInicial,
                 });
-            }
-            n++;  
-            month++;  
+                n++;  
+                month++;
+            }      
         }
 
         return response.status(200).json({ error: 'Servidor encontrado com sucesso!'});
