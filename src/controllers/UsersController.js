@@ -101,6 +101,18 @@ module.exports = {
             n++;  
             month++;  
         }
+
+        var year = datProcess.getFullYear();
+        var month = datProcess.getMonth() + 1;
+        var dia = datProcess.getDate();
+
+        if (dia > 15) {
+            month++;
+            if (month === 13) {
+                month = 01;
+                year++;
+            }
+        }
         
         if (user.length === 0) {
             var n = 1; 
