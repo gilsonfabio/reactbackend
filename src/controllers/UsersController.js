@@ -338,8 +338,12 @@ module.exports = {
     async searchUser (request, response) {
         let id = request.params.idUsr;
         const user = await connection('servidores')
-        .where('usrId', id)        
-        .select(['*']);
+        .where('usrId', id)  
+        .join('secretarias', 'secId', 'servidores.usrSecretaria') 
+        .join('orgadmin', 'orgId', 'secretarias.secOrgAdm') 
+        .join('cargos', 'crgId', 'servidores.usrCargo')  
+        .join('bairros', 'baiId', 'servidores.usrBairro')  
+        .select(['*', 'secretarias.secDescricao', 'orgadmin.orgDescricao', 'cargos.crgDescricao', 'bairros.baiDescricao']);
 
         //console.log(user);
         
