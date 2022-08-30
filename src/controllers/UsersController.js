@@ -508,6 +508,11 @@ module.exports = {
         var datNasConjuge = new Date();
         var status = 'A'; 
         var tipo_user = 'CM';
+
+        var auxbairro = 1;
+        var auxcargo = 1;
+        var auxsecretaria = 1;
+
         var senha = crypto.createHash('md5').update(user.senha_user).digest('hex');
         const [usrId] = await connection('servidores').insert({
             usrNome: user.nome_user,
@@ -516,14 +521,14 @@ module.exports = {
             usrCelular: user.fone_celular,
             usrCpf: user.cpf_user,
             usrMatricula: user.id_matricula,
-            usrSecretaria: user.secretaria,
+            usrSecretaria: auxsecretaria,
             usrNascimento: datNascimento,
             usrTipCadastro: user.tip_cadastro,
             usrIdentidade: user.identidade_user,
             usrOrgEmissor: user.orgemissor_user,
             usrEstCivil: user.estcivil_user,
             usrEndereco: user.logradouro,
-            usrBairro: user.bairro,
+            usrBairro: auxbairro,
             usrCidade: user.cidade_resid,
             usrEstado: user.estado_resid,
             usrCep: user.cep,
@@ -536,7 +541,7 @@ module.exports = {
             usrPassword: senha,
             usrTipContrato: tipo_user,
             usrFonTrabalho: user.fonTrabalho,
-            usrCargo: user.cargo,
+            usrCargo: auxcargo,
             usrConjuge: user.conjuge,
             usrNasConjuge: datNasConjuge,
             usrDatCadastro: datCadastro,
@@ -633,5 +638,29 @@ module.exports = {
         //console.log(user);
         return response.json(user);
     }, 
+
+    async delUser(request, response) {
+        let id = request.params.idSrv;
+
+        const compras = await connection('compras')
+        .where('cmpConvenio', id)
+        .join('servidores', 'usrId', 'compras.cmpServidor')
+        .orderBy('cmpId', 'desc')
+        .select(['compras.*', 'servidores.usrNome']);
+
+        let excOk = 'S' 
+        if (compras.length > 0 ){
+            excOk = 'N';
+            return response.status(400).json({ error: 'Servidor não pode ser excluido! Favor verificar dados.'});
+        }
+
+        if (excOk = 'S') {
+            await connection('servidores')
+            .where('usrId', id) 
+            .delete();
+             
+            return response.status(204).send();
+        }    
+    },
 
 };
