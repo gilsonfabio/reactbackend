@@ -291,7 +291,8 @@ module.exports = {
 
     async create(request, response) {
         const {usrNome, usrEmail, usrCartao, usrCelular, usrCpf, usrMatricula, usrSecretaria, usrNascimento, usrTipCadastro, usrIdentidade, usrOrgEmissor, usrEstCivil, usrEndereco,
-               usrBairro, usrCidade, usrEstado, usrCep, usrFonResid, usrTrabalho, usrAdmissao, usrSalLiquido, usrSalBase, usrSalBruto, usrPassword, usrTipContrato, usrFonTrabalho, usrCargo, usrConjuge, usrNasConjuge} = request.body;
+               usrBairro, usrCidade, usrEstado, usrCep, usrFonResid, usrTrabalho, usrAdmissao, usrSalLiquido, usrSalBase, usrSalBruto, usrPassword, usrTipContrato, usrFonTrabalho, 
+               usrCargo, usrConjuge, usrNasConjuge, usrPai, usrMae} = request.body;
         var datCadastro = new Date();
         var datNascimento = new Date(usrNascimento);
         var datAdmissao = new Date(usrAdmissao);
@@ -329,6 +330,8 @@ module.exports = {
             usrConjuge,
             usrNasConjuge: datNasConjuge,
             usrDatCadastro: datCadastro,
+            usrPai,
+            usrMae,
             usrStatus: status
         });
            
@@ -409,7 +412,9 @@ module.exports = {
             usrCargo,
             usrConjuge,
             usrNasConjuge, 
-            usrObsBloqueio } = request.body;
+            usrObsBloqueio,
+            usrPai,
+            usrMae } = request.body;
         
         let datUpdate = new Date();
         //var datNascimento = new Date(usrNascimento);
@@ -446,7 +451,9 @@ module.exports = {
             usrCargo,
             usrConjuge,
             usrNasConjuge,
-            usrObsBloqueio             
+            usrObsBloqueio,
+            usrPai,
+            usrMae             
         });
            
         return response.status(204).send();
