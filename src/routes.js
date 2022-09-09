@@ -18,6 +18,7 @@ const CargosController = require('./controllers/CargosController');
 const ParcelasController = require('./controllers/ParcelasController');
 const DownloadsController = require('./controllers/DownloadsController');
 const BairrosController = require('./controllers/BairrosController');
+const TiposController = require('./controllers/TiposController');
 
 routes.get('/', (request, response) => {
     response.json({
@@ -112,5 +113,10 @@ routes.get('/pdfSrvContrato/:srvId', UsersController.srvContratos);
 routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
 
 routes.get('/downloadTxt', DownloadsController.downTexto);
+
+routes.get('/tipos', TiposController.index);
+routes.post('/newtipo', TiposController.create);
+routes.put('/alttipo/:tipId', TiposController.updateTip);
+
 
 module.exports = routes;
