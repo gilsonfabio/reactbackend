@@ -19,7 +19,7 @@ module.exports = {
         return response.json({idTip});
     },
 
-    async updateSec(request, response) {
+    async updateTip(request, response) {
         let id = request.params.tipId;         
         
         const { tipDescricao, tipParcelas } = request.body;
