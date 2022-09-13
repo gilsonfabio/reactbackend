@@ -346,7 +346,8 @@ module.exports = {
         .join('orgadmin', 'orgId', 'secretarias.secOrgAdm') 
         .join('cargos', 'crgId', 'servidores.usrCargo')  
         .join('bairros', 'baiId', 'servidores.usrBairro')  
-        .select(['*', 'secretarias.secDescricao', 'orgadmin.orgDescricao', 'cargos.crgDescricao', 'bairros.baiDescricao']);
+        .join('tipcontratos', 'idTip', 'servidores.usrTipContrato')  
+        .select(['*', 'secretarias.secDescricao', 'orgadmin.orgDescricao', 'cargos.crgDescricao', 'bairros.baiDescricao', 'tipcontratos.tipDescricao']);
 
         //console.log(user);
         
