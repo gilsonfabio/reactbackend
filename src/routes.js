@@ -96,8 +96,11 @@ routes.get('/cmpConvenio/:idCnv', ComprasController.cmpConvenio);
 
 routes.get('/findCompras/:datVencto', ComprasController.cmpVencto);
 routes.get('/totCompras/:datVencto', ComprasController.totCompras);
+routes.get('/findCmpOrgao/:datVencto/:orgao', ComprasController.cmpOrgVenc);
+routes.get('/totCmpOrgao/:datVencto/:orgao', ComprasController.totCmpOrgao);
 routes.get('/pdfVdaEmissao', PdfsController.pdfVdaEmissao);
 routes.get('/pdfVdaVenc/:dataInicial/:dataFinal', PdfsController.pdfVdaVenc);
+routes.get('/pdfVctOrgao/:dataInicial/:dataFinal/:orgId', PdfsController.pdfVctOrgao);
 routes.get('/filiacao/:usrId', FiliacaoController.filiacao);
 routes.post('/newfiliacao', FiliacaoController.create);
 routes.get('/searchFiliacao/:idUsr/:idFil', FiliacaoController.searchFiliacao);

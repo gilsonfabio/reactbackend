@@ -33,8 +33,9 @@ module.exports = {
             .where('usrMes', month)
             .where('usrAno', year)
             .join('servidores', 'usrCartao', 'usrSaldo.usrServ')
-            .select(['usrSaldo.*', 'servidores.usrNome', 'servidores.usrMatricula', 'servidores.usrId', 'servidores.usrStatus', 'servidores.usrTipContrato']);
-          
+            .join('tipcontratos', 'idTip', 'servidores.usrTipContrato')
+            .select(['usrSaldo.*', 'servidores.usrNome', 'servidores.usrMatricula', 'servidores.usrId', 'servidores.usrStatus', 'servidores.usrTipContrato', 'tipcontratos.tipDescricao', 'tipcontratos.tipParcelas']);
+         
         if (!user) {
             return response.status(400).json({ error: 'Não encontrou servidor com este ID'});
         } 

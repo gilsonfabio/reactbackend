@@ -138,10 +138,43 @@ module.exports = {
 
     },
 
+    async cmpOrgVenc (request, response) {
+        let datSearch = request.params.datVencto;
+        let idOrg = request.params.orgao;
+        const compras = await connection('cmpParcelas')
+        .where('parVctParcela', datSearch)
+        .where('orgId', idOrg)
+        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+        .join('servidores', 'usrId', 'compras.cmpServidor')
+        .join('secretarias', 'secId', 'servidores.usrSecretaria')
+        .join('orgadmin', 'orgId', 'secretarias.secOrgAdm')
+        .orderBy('parVctParcela')
+        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'compras.cmpQtdParcela', 'servidores.usrNome', 'secretarias.secDescricao', 'orgadmin.orgId', 'orgadmin.orgDescricao']);
+
+        return response.json(compras);
+
+    },
+
     async totCompras (request, response) {
         let datSearch = request.params.datVencto;
         const total = await connection('cmpParcelas')
         .where('parVctParcela', datSearch)
+        .sum({totCmp : 'parVlrParcela'});
+
+        return response.json(total);
+
+    },   
+
+    async totCmpOrgao (request, response) {
+        let datSearch = request.params.datVencto;
+        let idOrg = request.params.orgao;
+        const total = await connection('cmpParcelas')
+        .where('parVctParcela', datSearch)
+        .where('orgId', idOrg)
+        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+        .join('servidores', 'usrId', 'compras.cmpServidor')
+        .join('secretarias', 'secId', 'servidores.usrSecretaria')
+        .join('orgadmin', 'orgId', 'secretarias.secOrgAdm')
         .sum({totCmp : 'parVlrParcela'});
 
         return response.json(total);
