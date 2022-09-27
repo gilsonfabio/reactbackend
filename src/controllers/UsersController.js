@@ -210,6 +210,24 @@ module.exports = {
         return response.json(user);
     },
 
+    async loginSrv(request, response) {
+        let email = request.params.email;
+        let senha = request.params.password;
+
+        var encodedVal = crypto.createHash('md5').update(senha).digest('hex');
+        const user = await connection('servidores')
+            .where('usrEmail', email)
+            .where('usrPassword', encodedVal)
+            .select('usrId', 'usrNome')
+            .first();
+          
+        if (!user) {
+            return response.status(400).json({ error: 'Não encontrou servidor com este ID'});
+        } 
+
+        return response.json(user);
+    },
+
     async loginUsr(request, response) {
         let id = request.params.cartao;
         let senha = request.params.password;

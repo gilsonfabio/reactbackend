@@ -72,6 +72,8 @@ routes.put('/altconvenio/:idCnv', ConveniosController.updateConv);
 routes.put('/delconvenio/:idCnv', ConveniosController.deleteConv);
 routes.get('/loginCnv/:email/:password', ConveniosController.signIn);
 
+routes.get('/loginSrv/:email/:password', UsersController.loginSrv);
+
 routes.get('/plapagto', PlaPagtoController.index);
 routes.post('/newplapagto', PlaPagtoController.create);
 routes.get('/altplapagto/:idPgt', PlaPagtoController.searchPlaPagto);
@@ -93,6 +95,7 @@ routes.get('/compras', ComprasController.index);
 routes.post('/newcompra', ComprasController.create);
 routes.get('/altcompra/:idCmp', ComprasController.searchCompras);
 routes.get('/cmpConvenio/:idCnv', ComprasController.cmpConvenio);
+routes.get('/cmpServidor/:idSrv', ComprasController.cmpServidor);
 
 routes.get('/findCompras/:datVencto', ComprasController.cmpVencto);
 routes.get('/totCompras/:datVencto', ComprasController.totCompras);
@@ -114,6 +117,7 @@ routes.get('/newinformacao/', UsersController.createInf);
 routes.get('/altinformacao/:idUsr/:idInf', UsersController.updInfor);
 routes.get('/pdfSrvContrato/:srvId', UsersController.srvContratos);
 routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
+routes.get('/pdfCmpEmissao', PdfsController.pdfCmpEmissao);
 
 routes.get('/downloadTxt', DownloadsController.downTexto);
 

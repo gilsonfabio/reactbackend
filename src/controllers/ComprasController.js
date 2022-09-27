@@ -28,6 +28,19 @@ module.exports = {
         return response.json(compras);
     },    
 
+    async cmpServidor (request, response) {
+        let id = request.params.idSrv;
+
+        const compras = await connection('compras')
+        .where('cmpServidor', id)
+        .join('servidores', 'usrId', 'compras.cmpServidor')
+        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+        .orderBy('cmpId', 'desc')
+        .select(['compras.*', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
+
+        return response.json(compras);
+    },    
+
     async create(request, response) {
         const { cmpEmissao, cmpHorEmissao, cmpConvenio, cmpQtdParcela, cmpVlrCompra, cmpServidor, cmpCodSeguranca, cmpStatus } = request.body;
  

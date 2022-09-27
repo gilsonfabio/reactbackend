@@ -16,6 +16,21 @@ module.exports = {
         return response.json(compras);
     }, 
 
+    async pdfCmpEmissao (request, response) {
+        let datSearch = moment('2022-01-15').format('YYYY-MM-DD');
+        //const votHora = moment().format('hh:mm:ss');
+        
+        const datNow = moment().format('DD-MM-YYYY');
+        const horNow = moment().format('hh:mm:ss');  
+                
+        const compras = await connection('compras')
+        .join('servidores', 'usrId', 'compras.cmpServidor')
+        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+        .select(['compras.*', 'servidores.usrNome', 'convenios.cnvId', 'convenios.cnvNomFantasia']);
+
+        return response.json(compras);
+    }, 
+
     async pdfVdaVenc (request, response) {
         //let datSearch = moment('2022-01-15').format('YYYY-MM-DD');
         //const votHora = moment().format('hh:mm:ss');
