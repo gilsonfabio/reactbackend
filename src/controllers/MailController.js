@@ -17,7 +17,7 @@ module.exports = {
         console.log(nomeUsuario);
         const emailEnvio = 'gilsonfabio@innvento.com.br';
 
-        //const apiKey = "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";
+        const apiKey = "";
 
         const sgMail = require('@sendgrid/mail')
 
