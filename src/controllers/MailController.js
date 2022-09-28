@@ -14,21 +14,34 @@ module.exports = {
         } 
 
         const nomeUsuario = user.usrNome;
-        const link = '';
-        const emailEnvio = 'no-reply@innvcard.com.br';
+        console.log(nomeUsuario);
+        const emailEnvio = 'gilsonfabio@innvento.com.br';
 
-        sendmail({
-            from: `${emailEnvio}`,
+        const apiKey = "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";
+
+        const sgMail = require('@sendgrid/mail')
+
+        //sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+        sgMail.setApiKey(apiKey)
+        const msg = {
             to: emailUsuario,
-            subject: 'test sendmail',
+            from: `${emailEnvio}`,
+            subject: 'Email para Recuperação de senha',
+            text: `Email de recuperação de senha servidor ${nomeUsuario}`,
             html: `<p>Olá, ${nomeUsuario}, </br></p><p>Você solicitou um email de recuperação de senha.</p></br> <p>Favor clicar no link abaixo para redefinir sua senha.</p></br>
-            <p><a href="https://sindicaldas.com.br/AltPassword/${emailUsuario}">Link de Recuperação de Senha</a></p>`,
-        }, function(err, reply) {
-            //console.log(err && err.stack);
-            //console.dir(reply);
-            
-            return response.json(user);
-
-        });
+                    <p><a href="https://sindicaldas.com.br/AltPassword/${emailUsuario}">Link de Recuperação de Senha</a></p>`,
+        }
+        sgMail
+          .send(msg)
+          .then(() => {
+            console.log('Email sent')
+          })
+        .catch((error) => {
+            console.error(error)
+        })     
+        
+        return response.json(user);
     }
 }
+

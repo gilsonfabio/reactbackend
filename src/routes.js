@@ -108,7 +108,9 @@ routes.get('/filiacao/:usrId', FiliacaoController.filiacao);
 routes.post('/newfiliacao', FiliacaoController.create);
 routes.get('/searchFiliacao/:idUsr/:idFil', FiliacaoController.searchFiliacao);
 routes.put('/altfiliacao/:idUsr/:idFil', FiliacaoController.updFiliacao);
+
 routes.get('/envEmail/:email', MailController.enviaEmail);
+
 routes.get('/parametros', ParametrosController.index);
 routes.put('/altparametros/:idPar', ParametrosController.updParam);
 routes.get('/usrAnterior/:cpfAnt', UsersController.usrAnterior);
