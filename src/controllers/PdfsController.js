@@ -81,7 +81,7 @@ module.exports = {
             .join('orgadmin', 'orgId', 'secretarias.secOrgAdm')
             .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrNome', 'convenios.cnvNomFantasia','secretarias.secOrgAdm', 'orgadmin.orgId']);
              
-        console.log(vctcompras);
+        //console.log(vctcompras);
            
         return response.json(vctcompras);
     }, 
@@ -198,10 +198,10 @@ module.exports = {
         let cnpjCnv = request.params.cnpjCnv;
         let cpfSrv = request.params.cpfSrv;
 
-        console.log('inicio:', inicio);
-        console.log('final:', final);
-        console.log('convenio:', cnpjCnv);
-        console.log('servidor:', cpfSrv);
+        //console.log('inicio:', inicio);
+        //console.log('final:', final);
+        //console.log('convenio:', cnpjCnv);
+        //console.log('servidor:', cpfSrv);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
@@ -213,7 +213,7 @@ module.exports = {
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
                 .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
-            console.log(result1)
+            //console.log(result1)
             return response.json(result1)
         }else {
             if (cnpjCnv === '0' && cpfSrv != '0') {
@@ -256,10 +256,10 @@ module.exports = {
         let cnpjCnv = request.params.cnpjCnv;
         let cpfSrv = request.params.cpfSrv;
 
-        console.log('inicio:', inicio);
-        console.log('final:', final);
-        console.log('convenio:', cnpjCnv);
-        console.log('servidor:', cpfSrv);
+        //console.log('inicio:', inicio);
+        //console.log('final:', final);
+        //console.log('convenio:', cnpjCnv);
+        //console.log('servidor:', cpfSrv);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
@@ -272,7 +272,7 @@ module.exports = {
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
                 .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
-            console.log(result1)
+            //console.log(result1)
             return response.json(result1)
         }else {
             if (cnpjCnv === '0' && cpfSrv != '0') {
@@ -318,10 +318,10 @@ module.exports = {
         let cnpjCnv = request.params.convenio;
         let cpfSrv = request.params.servidor;
 
-        console.log('inicio:', inicio);
-        console.log('final:', final);
-        console.log('convenio:', cnpjCnv);
-        console.log('servidor:', cpfSrv);
+        //console.log('inicio:', inicio);
+        //console.log('final:', final);
+        //console.log('convenio:', cnpjCnv);
+        //console.log('servidor:', cpfSrv);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
@@ -334,7 +334,7 @@ module.exports = {
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
                 .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
-            console.log(result1)
+            //console.log(result1)
             return response.json(result1)
         }else {
             if (cnpjCnv === '0' && cpfSrv != '0') {
@@ -380,10 +380,10 @@ module.exports = {
         let cnpjCnv = request.params.convenio;
         let cpfSrv = request.params.servidor;
 
-        console.log('inicio:', inicio);
-        console.log('final:', final);
-        console.log('convenio:', cnpjCnv);
-        console.log('servidor:', cpfSrv);
+        //console.log('inicio:', inicio);
+        //console.log('final:', final);
+        //console.log('convenio:', cnpjCnv);
+        //console.log('servidor:', cpfSrv);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
@@ -396,7 +396,7 @@ module.exports = {
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
                 .sum({totCmp : 'parVlrParcela'});
-            console.log(result1)
+            //console.log(result1)
             return response.json(result1)
         }else {
             if (cnpjCnv === '0' && cpfSrv != '0') {
