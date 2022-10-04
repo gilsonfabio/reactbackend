@@ -19,6 +19,7 @@ const ParcelasController = require('./controllers/ParcelasController');
 const DownloadsController = require('./controllers/DownloadsController');
 const BairrosController = require('./controllers/BairrosController');
 const TiposController = require('./controllers/TiposController');
+const { Router } = require('express');
 
 routes.get('/', (request, response) => {
     response.json({
@@ -99,6 +100,12 @@ routes.get('/cmpServidor/:idSrv', ComprasController.cmpServidor);
 
 routes.get('/findCompras/:datVencto', ComprasController.cmpVencto);
 routes.get('/totCompras/:datVencto', ComprasController.totCompras);
+
+routes.get('/cmpPeriodo/:datInicio/:datFinal/:convenio/:servidor', PdfsController.cmpPeriodo);
+routes.get('/somCompras/:datInicio/:datFinal/:convenio/:servidor', PdfsController.somCompras);
+routes.get('/vctPeriodo/:datInicio/:datFinal/:convenio/:servidor', PdfsController.vctPeriodo);
+routes.get('/somVctComp/:datInicio/:datFinal/:convenio/:servidor', PdfsController.somVctComp);
+
 routes.get('/findCmpOrgao/:datVencto/:orgao', ComprasController.cmpOrgVenc);
 routes.get('/totCmpOrgao/:datVencto/:orgao', ComprasController.totCmpOrgao);
 routes.get('/pdfVdaEmissao', PdfsController.pdfVdaEmissao);
@@ -120,7 +127,8 @@ routes.get('/altinformacao/:idUsr/:idInf', UsersController.updInfor);
 routes.get('/pdfSrvContrato/:srvId', UsersController.srvContratos);
 routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
 routes.get('/pdfCmpEmissao', PdfsController.pdfCmpEmissao);
-
+routes.get('/pdfCmpEmis/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfCmpEmis);
+routes.get('/pdfVctCompras/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfVctCompras);
 routes.get('/downloadTxt', DownloadsController.downTexto);
 
 routes.get('/tipos', TiposController.index);

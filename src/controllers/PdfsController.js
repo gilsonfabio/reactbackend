@@ -38,19 +38,19 @@ module.exports = {
         let inicio = request.params.dataInicial;
         let final = request.params.dataFinal;
   
-        console.log(inicio);
-        console.log(final);
+        //console.log(inicio);
+        //console.log(final);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
                 
         const vctcompras = await connection('cmpParcelas')
-        .where('parVctParcela','>=', inicio)
-        .where('parVctParcela','<=', final)
-        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
-        .join('servidores', 'usrId', 'compras.cmpServidor')
-        .join('convenios', 'cnvId', 'compras.cmpConvenio')
-        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
+            .where('parVctParcela','>=', inicio)
+            .where('parVctParcela','<=', final)
+            .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+            .join('servidores', 'usrId', 'compras.cmpServidor')
+            .join('convenios', 'cnvId', 'compras.cmpConvenio')
+            .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
 
         return response.json(vctcompras);
     }, 
@@ -63,25 +63,376 @@ module.exports = {
         let final = request.params.dataFinal;
         let idOrg = request.params.orgId;
 
-        console.log(inicio);
-        console.log(final);
-        console.log(idOrg);
+        //console.log(inicio);
+        //console.log(final);
+        //console.log(idOrg);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
                 
         const vctcompras = await connection('cmpParcelas')
-        .where('parVctParcela','>=', inicio)
-        .where('parVctParcela','<=', final)
-        .where('orgId', idOrg)
-        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
-        .join('servidores', 'usrId', 'compras.cmpServidor')
-        .join('convenios', 'cnvId', 'compras.cmpConvenio')
-        .join('secretarias', 'secId', 'servidores.usrSecretaria')
-        .join('orgadmin', 'orgId', 'secretarias.secOrgAdm')
-        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrNome', 'convenios.cnvNomFantasia','secretarias.secOrgAdm', 'orgadmin.orgId']);
-
+            .where('parVctParcela','>=', inicio)
+            .where('parVctParcela','<=', final)
+            .where('orgId', idOrg)
+            .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+            .join('servidores', 'usrId', 'compras.cmpServidor')
+            .join('convenios', 'cnvId', 'compras.cmpConvenio')
+            .join('secretarias', 'secId', 'servidores.usrSecretaria')
+            .join('orgadmin', 'orgId', 'secretarias.secOrgAdm')
+            .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrNome', 'convenios.cnvNomFantasia','secretarias.secOrgAdm', 'orgadmin.orgId']);
+             
+        console.log(vctcompras);
+           
         return response.json(vctcompras);
     }, 
-              
+
+    async cmpPeriodo (request, response) {
+        let inicio = request.params.datInicio;
+        let final = request.params.datFinal;
+        let cnpjCnv = request.params.convenio;
+        let cpfSrv = request.params.servidor;
+
+        //console.log('inicio:', inicio);
+        //console.log('final:', final);
+        //console.log('convenio:', cnpjCnv);
+        //console.log('servidor:', cpfSrv);
+
+        const datNow = moment().format('DD-MM-YYYY');
+        const horNow = moment().format('hh:mm:ss');  
+                
+        if (cnpjCnv === '0' && cpfSrv === '0') {
+            const result1 = await connection('compras')
+                .where('cmpEmissao','>=', inicio)
+                .where('cmpEmissao','<=', final)
+                .join('servidores', 'usrId', 'compras.cmpServidor')
+                .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+            return response.json(result1);
+        }else {
+            if (cnpjCnv === '0' && cpfSrv !== '0') {
+                const result2 = await connection('compras')
+                    .where('cmpEmissao','>=', inicio)
+                    .where('cmpEmissao','<=', final)
+                    .where('servidores.usrCpf', cpfSrv)
+                    .join('servidores', 'usrId', 'compras.cmpServidor')
+                    .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                    .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                return response.json(result2);    
+            }else{
+                if (cnpjCnv !== '0' && cpfSrv === '0') {
+                    const result3 = await connection('compras')
+                        .where('cmpEmissao','>=', inicio)
+                        .where('cmpEmissao','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)                    
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    return response.json(result3);
+                }else {
+                    const result4 = await connection('compras')
+                        .where('cmpEmissao','>=', inicio)
+                        .where('cmpEmissao','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)  
+                        .where('servidores.usrCpf', cpfSrv)                  
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    return response.json(result4);     
+                }
+            }
+        }     
+    }, 
+
+    async somCompras (request, response) {
+        let inicio = request.params.datInicio;
+        let final = request.params.datFinal;
+        let cnpjCnv = request.params.convenio;
+        let cpfSrv = request.params.servidor;
+        
+        if (cnpjCnv === '0' && cpfSrv === '0') {
+            const result1 = await connection('compras')
+                .where('cmpEmissao','>=', inicio)
+                .where('cmpEmissao','<=', final)
+                .join('servidores', 'usrId', 'compras.cmpServidor')
+                .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                .sum({totCmp : 'cmpVlrCompra'});
+            return response.json(result1);
+        }else {
+            if (cnpjCnv === '0' && cpfSrv !== '0') {
+                const result2 = await connection('compras')
+                    .where('cmpEmissao','>=', inicio)
+                    .where('cmpEmissao','<=', final)
+                    .where('servidores.usrCpf', cpfSrv)
+                    .join('servidores', 'usrId', 'compras.cmpServidor')
+                    .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                    .sum({totCmp : 'cmpVlrCompra'});
+                return response.json(result2);    
+            }else{
+                if (cnpjCnv !== '0' && cpfSrv === '0') {
+                    const result3 = await connection('compras')
+                        .where('cmpEmissao','>=', inicio)
+                        .where('cmpEmissao','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)                    
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .sum({totCmp : 'cmpVlrCompra'});
+                    return response.json(result3);
+                }else {
+                    const result4 = await connection('compras')
+                        .where('cmpEmissao','>=', inicio)
+                        .where('cmpEmissao','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)  
+                        .where('servidores.usrCpf', cpfSrv)                  
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .sum({totCmp : 'cmpVlrCompra'});
+                    return response.json(result4);    
+                }
+            }
+        }     
+    },
+    
+    async pdfCmpEmis (request, response) {
+        let inicio = request.params.dataInicio;
+        let final = request.params.dataFinal;
+        let cnpjCnv = request.params.cnpjCnv;
+        let cpfSrv = request.params.cpfSrv;
+
+        console.log('inicio:', inicio);
+        console.log('final:', final);
+        console.log('convenio:', cnpjCnv);
+        console.log('servidor:', cpfSrv);
+
+        const datNow = moment().format('DD-MM-YYYY');
+        const horNow = moment().format('hh:mm:ss');  
+                
+        if (cnpjCnv === '0' && cpfSrv === '0') {
+            const result1 = await connection('compras')
+                .where('cmpEmissao','>=', inicio)
+                .where('cmpEmissao','<=', final)
+                .join('servidores', 'usrId', 'compras.cmpServidor')
+                .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+            console.log(result1)
+            return response.json(result1)
+        }else {
+            if (cnpjCnv === '0' && cpfSrv != '0') {
+                const result2 = await connection('compras')
+                    .where('cmpEmissao','>=', inicio)
+                    .where('cmpEmissao','<=', final)
+                    .where('servidores.usrCpf', cpfSrv)
+                    .join('servidores', 'usrId', 'compras.cmpServidor')
+                    .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                    .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                return response.json(result2)    
+            }else{
+                if (cnpjCnv != '0' && cpfSrv === '0') {
+                    const result3 = await connection('compras')
+                        .where('cmpEmissao','>=', inicio)
+                        .where('cmpEmissao','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)                    
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    return response.json(result3)
+                }else {
+                    const result4 = await connection('compras')
+                        .where('cmpEmissao','>=', inicio)
+                        .where('cmpEmissao','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)  
+                        .where('servidores.usrCpf', cpfSrv)                  
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    return response.json(result4) 
+                }
+            }
+        }     
+    },               
+
+    async pdfVctCompras (request, response) {
+        let inicio = request.params.dataInicio;
+        let final = request.params.dataFinal;
+        let cnpjCnv = request.params.cnpjCnv;
+        let cpfSrv = request.params.cpfSrv;
+
+        console.log('inicio:', inicio);
+        console.log('final:', final);
+        console.log('convenio:', cnpjCnv);
+        console.log('servidor:', cpfSrv);
+
+        const datNow = moment().format('DD-MM-YYYY');
+        const horNow = moment().format('hh:mm:ss');  
+                
+        if (cnpjCnv === '0' && cpfSrv === '0') {
+            const result1 = await connection('cmpParcelas')
+                .where('parVctParcela','>=', inicio)
+                .where('parVctParcela','<=', final)
+                .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+                .join('servidores', 'usrId', 'compras.cmpServidor')
+                .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+            console.log(result1)
+            return response.json(result1)
+        }else {
+            if (cnpjCnv === '0' && cpfSrv != '0') {
+                const result2 = await connection('cmpParcelas')
+                    .where('parVctParcela','>=', inicio)
+                    .where('parVctParcela','<=', final)
+                    .where('servidores.usrCpf', cpfSrv)
+                    .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+                    .join('servidores', 'usrId', 'compras.cmpServidor')
+                    .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                    .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                return response.json(result2)    
+            }else{
+                if (cnpjCnv != '0' && cpfSrv === '0') {
+                    const result3 = await connection('cmpParcelas')
+                        .where('parVctParcela','>=', inicio)
+                        .where('parVctParcela','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)         
+                        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')           
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    return response.json(result3)
+                }else {
+                    const result4 = await connection('cmpParcelas')
+                        .where('parVctParcela','>=', inicio)
+                        .where('parVctParcela','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)  
+                        .where('servidores.usrCpf', cpfSrv)                 
+                        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra') 
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    return response.json(result4) 
+                }
+            }
+        }     
+    }, 
+                    
+    async vctPeriodo (request, response) {
+        let inicio = request.params.datInicio;
+        let final = request.params.datFinal;
+        let cnpjCnv = request.params.convenio;
+        let cpfSrv = request.params.servidor;
+
+        console.log('inicio:', inicio);
+        console.log('final:', final);
+        console.log('convenio:', cnpjCnv);
+        console.log('servidor:', cpfSrv);
+
+        const datNow = moment().format('DD-MM-YYYY');
+        const horNow = moment().format('hh:mm:ss');  
+                
+        if (cnpjCnv === '0' && cpfSrv === '0') {
+            const result1 = await connection('cmpParcelas')
+                .where('parVctParcela','>=', inicio)
+                .where('parVctParcela','<=', final)
+                .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+                .join('servidores', 'usrId', 'compras.cmpServidor')
+                .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+            console.log(result1)
+            return response.json(result1)
+        }else {
+            if (cnpjCnv === '0' && cpfSrv != '0') {
+                const result2 = await connection('cmpParcelas')
+                    .where('parVctParcela','>=', inicio)
+                    .where('parVctParcela','<=', final)
+                    .where('servidores.usrCpf', cpfSrv)
+                    .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+                    .join('servidores', 'usrId', 'compras.cmpServidor')
+                    .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                    .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                return response.json(result2)    
+            }else{
+                if (cnpjCnv != '0' && cpfSrv === '0') {
+                    const result3 = await connection('cmpParcelas')
+                        .where('parVctParcela','>=', inicio)
+                        .where('parVctParcela','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)         
+                        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')           
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    return response.json(result3)
+                }else {
+                    const result4 = await connection('cmpParcelas')
+                        .where('parVctParcela','>=', inicio)
+                        .where('parVctParcela','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)  
+                        .where('servidores.usrCpf', cpfSrv)                 
+                        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra') 
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    return response.json(result4) 
+                }
+            }
+        }     
+    }, 
+    
+    async somVctComp (request, response) {
+        let inicio = request.params.datInicio;
+        let final = request.params.datFinal;
+        let cnpjCnv = request.params.convenio;
+        let cpfSrv = request.params.servidor;
+
+        console.log('inicio:', inicio);
+        console.log('final:', final);
+        console.log('convenio:', cnpjCnv);
+        console.log('servidor:', cpfSrv);
+
+        const datNow = moment().format('DD-MM-YYYY');
+        const horNow = moment().format('hh:mm:ss');  
+                
+        if (cnpjCnv === '0' && cpfSrv === '0') {
+            const result1 = await connection('cmpParcelas')
+                .where('parVctParcela','>=', inicio)
+                .where('parVctParcela','<=', final)
+                .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+                .join('servidores', 'usrId', 'compras.cmpServidor')
+                .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                .sum({totCmp : 'parVlrParcela'});
+            console.log(result1)
+            return response.json(result1)
+        }else {
+            if (cnpjCnv === '0' && cpfSrv != '0') {
+                const result2 = await connection('cmpParcelas')
+                    .where('parVctParcela','>=', inicio)
+                    .where('parVctParcela','<=', final)
+                    .where('servidores.usrCpf', cpfSrv)
+                    .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
+                    .join('servidores', 'usrId', 'compras.cmpServidor')
+                    .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                    .sum({totCmp : 'parVlrParcela'});
+                return response.json(result2)    
+            }else{
+                if (cnpjCnv != '0' && cpfSrv === '0') {
+                    const result3 = await connection('cmpParcelas')
+                        .where('parVctParcela','>=', inicio)
+                        .where('parVctParcela','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)         
+                        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')           
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .sum({totCmp : 'parVlrParcela'});
+                    return response.json(result3)
+                }else {
+                    const result4 = await connection('cmpParcelas')
+                        .where('parVctParcela','>=', inicio)
+                        .where('parVctParcela','<=', final)
+                        .where('convenios.cnvCpfCnpj', cnpjCnv)  
+                        .where('servidores.usrCpf', cpfSrv)                 
+                        .join('compras', 'cmpId', 'cmpParcelas.parIdCompra') 
+                        .join('servidores', 'usrId', 'compras.cmpServidor')
+                        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+                        .sum({totCmp : 'parVlrParcela'});
+                    return response.json(result4) 
+                }
+            }
+        }     
+    }, 
 };
