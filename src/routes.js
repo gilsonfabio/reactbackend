@@ -129,7 +129,8 @@ routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
 routes.get('/pdfCmpEmissao', PdfsController.pdfCmpEmissao);
 routes.get('/pdfCmpEmis/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfCmpEmis);
 routes.get('/pdfVctCompras/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfVctCompras);
-routes.get('/downloadTxt', DownloadsController.downTexto);
+
+routes.get('/downloadTxt/:datInicial/:orgId', DownloadsController.downTexto);
 
 routes.get('/tipos', TiposController.index);
 routes.post('/newtipo', TiposController.create);

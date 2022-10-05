@@ -6,22 +6,23 @@ module.exports = {
         const emailUsuario = request.params.email;
         const user = await connection('servidores')
             .where('usrEmail', emailUsuario)
-            .select('usrNome')
+            .select('usrNome', 'usrId')
             .first();
           
         if (!user) {
             return response.status(400).json({ error: 'Não encontrou usuario com este ID'});
         } 
 
+        const codUsuario = user.usrId;
         const nomeUsuario = user.usrNome;
+
         console.log(nomeUsuario);
+
+        const link = '';
         const emailEnvio = 'gilsonfabio@innvento.com.br';
 
-        const apiKey = "";
-
+        const apiKey = process.env.SENDGRID_API_KEY;
         const sgMail = require('@sendgrid/mail')
-
-        //sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
         sgMail.setApiKey(apiKey)
         const msg = {
@@ -29,8 +30,16 @@ module.exports = {
             from: `${emailEnvio}`,
             subject: 'Email para Recuperação de senha',
             text: `Email de recuperação de senha servidor ${nomeUsuario}`,
+            attachments: [
+                {
+                  content: attachment,
+                  filename: "arquivo.txt",
+                  type: "text/plain",
+                  disposition: "attachment"
+                }
+            ],
             html: `<p>Olá, ${nomeUsuario}, </br></p><p>Você solicitou um email de recuperação de senha.</p></br> <p>Favor clicar no link abaixo para redefinir sua senha.</p></br>
-                    <p><a href="https://sindicaldas.com.br/AltPassword/${emailUsuario}">Link de Recuperação de Senha</a></p>`,
+                    <p><a href="https://sindicaldas.com.br/AltPassword/${emailUsuario}/${codUsuario}">Link de Recuperação de Senha</a></p>`,
         }
         sgMail
           .send(msg)
@@ -41,7 +50,8 @@ module.exports = {
             console.error(error)
         })     
         
-        return response.json(user);
-    }
+        return response.json(user);  
+        
+    }   
 }
 
