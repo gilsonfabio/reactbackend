@@ -43,7 +43,9 @@ module.exports = {
 
     async create(request, response) {
         const { cmpEmissao, cmpHorEmissao, cmpConvenio, cmpQtdParcela, cmpVlrCompra, cmpServidor, cmpCodSeguranca, cmpStatus } = request.body;
- 
+         
+        let servidor = request.body.cmpServidor;
+          
         const [cmpId] = await connection('compras').insert({
             cmpEmissao, 
             cmpHorEmissao, 
@@ -98,8 +100,19 @@ module.exports = {
                 parStaParcela: staParcela,                
             });
             
-            //console.log(i);
-        
+            const usr = await connection('servidores')
+            .where('usrId',servidor)
+            .select('usrCartao');
+
+            let nroCartao = usr[0].usrCartao;
+            console.log('Cartão:',nroCartao);
+
+            const updServ = await connection('usrSaldo')
+                .where('usrServ',nroCartao)
+                .where('usrMes',month)
+                .where('usrAno',year)
+                .increment({usrVlrUsado: vlrParcela})
+                .decrement({usrVlrDisponivel: vlrParcela});
         }
         
         return response.json({cmpId});

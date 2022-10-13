@@ -388,15 +388,18 @@ module.exports = {
 
     async updPassword(request, response) {
         let email = request.params.emailUsuario;         
-        const { newPassword } = request.body;
+        const { newPassword, codSeguranca } = request.body;
         
         let datUpdate = new Date();
-
+        let seguranca = '';
         var senha = crypto.createHash('md5').update(newPassword).digest('hex');
 
-        await connection('servidores').where('usrEmail', email)   
+        await connection('servidores')
+        .where('usrEmail', email)
+        .where('usrSeguranca', codSeguranca)   
         .update({
-            usrPassword: senha,           
+            usrPassword: senha,
+            usrCodSeguranca: seguranca,           
         });
            
         return response.status(204).send();

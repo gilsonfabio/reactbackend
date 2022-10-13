@@ -72,6 +72,8 @@ routes.post('/newconvenio', ConveniosController.create);
 routes.put('/altconvenio/:idCnv', ConveniosController.updateConv);
 routes.put('/delconvenio/:idCnv', ConveniosController.deleteConv);
 routes.get('/loginCnv/:email/:password', ConveniosController.signIn);
+routes.put('/updPassCnv/:emailUsuario', ConveniosController.updPassCnv);
+routes.put('/updSnhCnvCanc/:emailUsuario', ConveniosController.updSnhCnvCanc);
 
 routes.get('/loginSrv/:email/:password', UsersController.loginSrv);
 
@@ -117,6 +119,8 @@ routes.get('/searchFiliacao/:idUsr/:idFil', FiliacaoController.searchFiliacao);
 routes.put('/altfiliacao/:idUsr/:idFil', FiliacaoController.updFiliacao);
 
 routes.get('/envEmail/:email', MailController.enviaEmail);
+routes.get('/recPassword/:email', MailController.recPassword);
+routes.get('/recPassCnv/:email', MailController.recPassCnv);
 
 routes.get('/parametros', ParametrosController.index);
 routes.put('/altparametros/:idPar', ParametrosController.updParam);
@@ -129,12 +133,14 @@ routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
 routes.get('/pdfCmpEmissao', PdfsController.pdfCmpEmissao);
 routes.get('/pdfCmpEmis/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfCmpEmis);
 routes.get('/pdfVctCompras/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfVctCompras);
+routes.get('/pdfVctCmpSrv/:datInicial/:datFinal/:codServidor', PdfsController.pdfVctCmpSrv);
+routes.get('/pdfVctCmpCnv/:datInicial/:datFinal/:codConvenio', PdfsController.pdfVctCmpCnv);
+routes.get('/pdfEmiCmpCnv/:datInicial/:datFinal/:codConvenio', PdfsController.pdfEmiCmpCnv);
 
 routes.get('/downloadTxt/:datInicial/:orgId', DownloadsController.downTexto);
 
 routes.get('/tipos', TiposController.index);
 routes.post('/newtipo', TiposController.create);
 routes.put('/alttipo/:tipId', TiposController.updateTip);
-
 
 module.exports = routes;

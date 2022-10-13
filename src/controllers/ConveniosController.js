@@ -153,5 +153,41 @@ module.exports = {
            
         return response.status(204).send();
     },
+
+    async updPassCnv(request, response) {
+        let email = request.params.emailConvenio;         
+        const { newPassword, codSeguranca } = request.body;
+        
+        let seguranca = '';
+        var senha = crypto.createHash('md5').update(newPassword).digest('hex');
+
+        await connection('convenios')
+        .where('cnvEmail', email)
+        .where('usrSeguranca', codSeguranca)   
+        .update({
+            cnvPassword: senha,
+            cnvCodSeguranca: seguranca,           
+        });
+           
+        return response.status(204).send();
+    },
+
+    async updSnhCnvCanc(request, response) {
+        let email = request.params.emailConvenio;         
+        const { newPassword, codSeguranca } = request.body;
+        
+        let seguranca = '';
+        var senha = crypto.createHash('md5').update(newPassword).digest('hex');
+
+        await connection('convenios')
+        .where('cnvEmail', email)
+        .where('usrSeguranca', codSeguranca)   
+        .update({
+            cnvCanPassword: senha,
+            cnvCodSeguranca: seguranca,           
+        });
+           
+        return response.status(204).send();
+    },
     
 };
