@@ -56,7 +56,7 @@ module.exports = {
             cnvContato,
             cnvAtividade,
             cnvPassword,
-            cnvCanPassword,
+            cnvCanPassword,  
             cnvEndereco,
             cnvBairro,
             cnvCidade,
@@ -64,9 +64,9 @@ module.exports = {
             cnvCep } = request.body;
         
         let status = "A";
-        
-        //var snhConvenio = crypto.createHash('md5').update(cnvPassword).digest('hex');
-        //var snhCancelamento = crypto.createHash('md5').update(cnvCanPassword).digest('hex');
+  
+        var snhConvenio = crypto.createHash('md5').update(cnvPassword).digest('hex');
+        var snhCancelamento = crypto.createHash('md5').update(cnvCanPassword).digest('hex');
             
         const [cnvId] = await connection('convenios').insert({
             cnvRazSocial, 
@@ -76,8 +76,8 @@ module.exports = {
             cnvTelefone,
             cnvContato,
             cnvAtividade,
-            cnvPassword,
-            cnvCanPassword,
+            cnvPassword: snhConvenio,
+            cnvCanPassword: snhCancelamento,
             cnvEndereco,
             cnvBairro,
             cnvCidade,
