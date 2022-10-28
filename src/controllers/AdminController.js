@@ -68,17 +68,20 @@ module.exports = {
         return response.json(admin);
     },
 
-    async updPassword(request, response) {
+    async updPassAdmin(request, response) {
         let email = request.params.emailUsuario;         
-        const { password } = request.body;
+        const { newPassword, codSeguranca } = request.body;
         
         let datUpdate = new Date();
+        let seguranca = '';
+        var senha = crypto.createHash('md5').update(newPassword).digest('hex');
 
-        var senha = crypto.createHash('md5').update(password).digest('hex');
-
-        await connection('administrator').where('admEmail', email)   
+        await connection('administrator')
+        .where('admEmail', email)
+        .where('admSeguranca', codSeguranca)   
         .update({
-            admSenha: senha,           
+            usrPassword: senha,
+            usrCodSeguranca: seguranca,           
         });
            
         return response.status(204).send();

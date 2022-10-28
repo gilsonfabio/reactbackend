@@ -9,7 +9,17 @@ module.exports = {
         .select('*');
     
         return response.json(convenios);
-    },    
+    },   
+    
+    async classCnv (request, response) {
+        let nome = request.params.search;
+        const convenios = await connection('convenios')
+        .where('cnvNomFantasia','>', nome)       
+        .orderBy('cnvNomFantasia') 
+        .select(['*']);
+        
+        return response.json(convenios);
+    }, 
 
     async signIn(request, response) {
         let emailCnv = request.params.email;

@@ -45,7 +45,7 @@ routes.get('/admin', AdminController.index);
 routes.get('/loginAdm/:email/:password', AdminController.signIn);
 routes.post('/newadmin', AdminController.create);
 routes.get('/searchAdmin/:idAdm', AdminController.searchAdmin);
-routes.put('/newSenhaAdmin/:emailAdmin', AdminController.updPassword);
+routes.put('/updPassAdmin/:emailUsuario', AdminController.updPassAdmin);
 routes.put('/altadmin/:idAdm', AdminController.updAdmin);
 
 routes.get('/secretarias', SecretController.index);
@@ -74,6 +74,7 @@ routes.put('/delconvenio/:idCnv', ConveniosController.deleteConv);
 routes.get('/loginCnv/:email/:password', ConveniosController.signIn);
 routes.put('/updPassCnv/:emailUsuario', ConveniosController.updPassCnv);
 routes.put('/updSnhCnvCanc/:emailUsuario', ConveniosController.updSnhCnvCanc);
+routes.get('/classCnv/:search', ConveniosController.classCnv);
 
 routes.get('/loginSrv/:email/:password', UsersController.loginSrv);
 
