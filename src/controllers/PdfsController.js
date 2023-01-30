@@ -84,16 +84,26 @@ module.exports = {
         let final = request.params.datFinal;
         let convenio = request.params.codConvenio;
 
-        console.log(inicio);
-        console.log(final);
-        console.log(convenio);
+        let ano = inicio.substring(6,4);
+        let mes = inicio.substring(3,2);
+        let dia = inicio.substring(0,2);
+        let relInicio = new Date(ano,mes,dia);
+
+        let anofinal = final.substring(6,4);
+        let mesfinal = final.substring(3,2);
+        let diafinal = final.substring(0,2);
+        let relFinal = new Date(anofinal,mesfinal,diafinal);
+
+        //console.log(inicio);
+        //console.log(final);
+        //.log(convenio);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
                 
         const vctcompras = await connection('cmpParcelas')
-            .where('parVctParcela','>=', inicio)
-            .where('parVctParcela','<=', final)
+            .where('parVctParcela','>=', relInicio)
+            .where('parVctParcela','<=', relFinal)
             .where('convenios.cnvId', convenio)
             .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
             .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -108,16 +118,26 @@ module.exports = {
         let final = request.params.datFinal;
         let convenio = request.params.codConvenio;
 
-        console.log(inicio);
-        console.log(final);
-        console.log(convenio);
+        //console.log(inicio);
+        //console.log(final);
+        //console.log(convenio);
+
+        let ano = inicio.substring(6,4);
+        let mes = inicio.substring(3,2);
+        let dia = inicio.substring(0,2);
+        let relInicio = new Date(ano,mes,dia);
+
+        let anofinal = final.substring(6,4);
+        let mesfinal = final.substring(3,2);
+        let diafinal = final.substring(0,2);
+        let relFinal = new Date(anofinal,mesfinal,diafinal);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
                 
         const emicompras = await connection('compras')
-            .where('cmpEmissao','>=', inicio)
-            .where('cmpEmissao','<=', final)
+            .where('cmpEmissao','>=', relInicio)
+            .where('cmpEmissao','<=', relFinal)
             .where('cmpConvenio', convenio)
             .join('servidores', 'usrId', 'compras.cmpServidor')
             .join('convenios', 'cnvId', 'compras.cmpConvenio')
