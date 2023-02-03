@@ -239,7 +239,8 @@ module.exports = {
         const user = await connection('servidores')
             .where('usrCartao', id)
             .where('usrPassword', encodedVal)
-            .select('*')
+            .join('tipcontratos', 'idTip', 'servidores.usrTipContrato') 
+            .select(['servidores.*','tipcontratos.tipId','tipcontratos.tipDescricao','tipcontratos.tipParcelas'])
             .first();
           
         if (!user) {
