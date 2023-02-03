@@ -9,5 +9,15 @@ module.exports = {
         .select('*');
         
         return response.json(parc);
-    },       
+    }, 
+    
+    async parCompra (request, response) {
+        var id = request.params.idCmp;
+
+        const parc = await connection('cmpParcelas')
+        .where('parIdCompra',id)
+        .select('*');
+        
+        return response.json(parc);
+    }, 
 };

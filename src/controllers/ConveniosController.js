@@ -39,6 +39,24 @@ module.exports = {
         return response.json(conv);
     },
 
+    async signInCnc(request, response) {
+        let emailCnv = request.params.email;
+        let senha = request.params.password;
+
+        var encodedVal = crypto.createHash('md5').update(senha).digest('hex');
+        const conv = await connection('convenios')
+            .where('cnvEmail', emailCnv)
+            .where('cnvCanPassword', encodedVal)
+            .select('cnvId', 'cnvNomFantasia')
+            .first();
+          
+        if (!conv) {
+            return response.status(400).json({ error: 'Não encontrou convênio com este ID'});
+        } 
+
+        return response.json(conv);
+    },    
+
     //async signAlt(request, response) {
     //    let email = request.params.email;
     //    let senha = request.params.password;

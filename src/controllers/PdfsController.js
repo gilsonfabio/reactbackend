@@ -22,8 +22,10 @@ module.exports = {
         
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
-                
+        
+        let status = 'A';
         const compras = await connection('compras')
+        .where('cmpStatus', 'status')
         .join('servidores', 'usrId', 'compras.cmpServidor')
         .join('convenios', 'cnvId', 'compras.cmpConvenio')
         .select(['compras.*', 'servidores.usrNome', 'convenios.cnvId', 'convenios.cnvNomFantasia']);
@@ -37,7 +39,7 @@ module.exports = {
         
         let inicio = request.params.dataInicial;
         let final = request.params.dataFinal;
-  
+        let status = 'A';
         //console.log(inicio);
         //console.log(final);
 
@@ -47,6 +49,7 @@ module.exports = {
         const vctcompras = await connection('cmpParcelas')
             .where('parVctParcela','>=', inicio)
             .where('parVctParcela','<=', final)
+            .where('parStaParcela', status)
             .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
             .join('servidores', 'usrId', 'compras.cmpServidor')
             .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -59,10 +62,11 @@ module.exports = {
         let inicio = request.params.datInicial;
         let final = request.params.datFinal;
         let servidor = request.params.codServidor;
-
-        console.log(inicio);
-        console.log(final);
-        console.log(servidor);
+        let status = 'A';
+        
+        //console.log(inicio);
+        //console.log(final);
+        //console.log(servidor);
 
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
@@ -70,6 +74,7 @@ module.exports = {
         const vctcompras = await connection('cmpParcelas')
             .where('parVctParcela','>=', inicio)
             .where('parVctParcela','<=', final)
+            .where('parStaParcela', status)
             .where('servidores.usrId', servidor)
             .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
             .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -82,18 +87,12 @@ module.exports = {
     async pdfVctCmpCnv (request, response) {
         let inicio = request.params.datInicial;
         let final = request.params.datFinal;
-        let convenio = request.params.codConvenio;
+        let convenio = request.params.cnvId;
+        let status = 'A';
 
-        let ano = inicio.substring(6,4);
-        let mes = inicio.substring(3,2);
-        let dia = inicio.substring(0,2);
-        let relInicio = new Date(ano,mes,dia);
-
-        let anofinal = final.substring(6,4);
-        let mesfinal = final.substring(3,2);
-        let diafinal = final.substring(0,2);
-        let relFinal = new Date(anofinal,mesfinal,diafinal);
-
+        let datIni = inicio.split('/').reverse().join('-');
+        let datFin = final.split('/').reverse().join('-');
+        
         //console.log(inicio);
         //console.log(final);
         //.log(convenio);
@@ -102,13 +101,16 @@ module.exports = {
         const horNow = moment().format('hh:mm:ss');  
                 
         const vctcompras = await connection('cmpParcelas')
-            .where('parVctParcela','>=', relInicio)
-            .where('parVctParcela','<=', relFinal)
+            .where('parVctParcela','>=', datIni)
+            .where('parVctParcela','<=', datFin)
+            .where('parStaParcela', status)
             .where('convenios.cnvId', convenio)
             .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
             .join('servidores', 'usrId', 'compras.cmpServidor')
             .join('convenios', 'cnvId', 'compras.cmpConvenio')
             .select(['cmpParcelas.*', 'compras.cmpId', 'compras.cmpQtdParcela', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'compras.cmpVlrCompra', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
+
+            console.log(vctcompras)
 
         return response.json(vctcompras);
     }, 
@@ -116,28 +118,23 @@ module.exports = {
     async pdfEmiCmpCnv (request, response) {
         let inicio = request.params.datInicial;
         let final = request.params.datFinal;
-        let convenio = request.params.codConvenio;
-
-        //console.log(inicio);
-        //console.log(final);
-        //console.log(convenio);
-
-        let ano = inicio.substring(6,4);
-        let mes = inicio.substring(3,2);
-        let dia = inicio.substring(0,2);
-        let relInicio = new Date(ano,mes,dia);
-
-        let anofinal = final.substring(6,4);
-        let mesfinal = final.substring(3,2);
-        let diafinal = final.substring(0,2);
-        let relFinal = new Date(anofinal,mesfinal,diafinal);
-
+        let convenio = request.params.cnvId;
+        let status = 'A';
+                               
         const datNow = moment().format('DD-MM-YYYY');
         const horNow = moment().format('hh:mm:ss');  
-                
+
+        let datIni = inicio.split('/').reverse().join('-');
+        let datFin = final.split('/').reverse().join('-');
+       
+        //console.log('Inicio', datIni);
+        //console.log('Final:', datFin);
+        //console.log('Convenio:', convenio);
+
         const emicompras = await connection('compras')
-            .where('cmpEmissao','>=', relInicio)
-            .where('cmpEmissao','<=', relFinal)
+            .where('cmpEmissao','>=', datIni)
+            .where('cmpEmissao','<=', datFin)
+            .where('cmpStatus', status)
             .where('cmpConvenio', convenio)
             .join('servidores', 'usrId', 'compras.cmpServidor')
             .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -153,7 +150,7 @@ module.exports = {
         let inicio = request.params.dataInicial;
         let final = request.params.dataFinal;
         let idOrg = request.params.orgId;
-
+        let status = 'A';
         //console.log(inicio);
         //console.log(final);
         //console.log(idOrg);
@@ -164,6 +161,7 @@ module.exports = {
         const vctcompras = await connection('cmpParcelas')
             .where('parVctParcela','>=', inicio)
             .where('parVctParcela','<=', final)
+            .where('parStaParcela', status)
             .where('orgId', idOrg)
             .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
             .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -182,7 +180,7 @@ module.exports = {
         let final = request.params.datFinal;
         let cnpjCnv = request.params.convenio;
         let cpfSrv = request.params.servidor;
-
+        let status = 'A';
         //console.log('inicio:', inicio);
         //console.log('final:', final);
         //console.log('convenio:', cnpjCnv);
@@ -195,6 +193,7 @@ module.exports = {
             const result1 = await connection('compras')
                 .where('cmpEmissao','>=', inicio)
                 .where('cmpEmissao','<=', final)
+                .where('cmpStatus', status)
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
                 .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
@@ -204,6 +203,7 @@ module.exports = {
                 const result2 = await connection('compras')
                     .where('cmpEmissao','>=', inicio)
                     .where('cmpEmissao','<=', final)
+                    .where('cmpStatus', status)
                     .where('servidores.usrCpf', cpfSrv)
                     .join('servidores', 'usrId', 'compras.cmpServidor')
                     .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -214,6 +214,7 @@ module.exports = {
                     const result3 = await connection('compras')
                         .where('cmpEmissao','>=', inicio)
                         .where('cmpEmissao','<=', final)
+                        .where('cmpStatus', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)                    
                         .join('servidores', 'usrId', 'compras.cmpServidor')
                         .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -223,6 +224,7 @@ module.exports = {
                     const result4 = await connection('compras')
                         .where('cmpEmissao','>=', inicio)
                         .where('cmpEmissao','<=', final)
+                        .where('cmpStatus', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)  
                         .where('servidores.usrCpf', cpfSrv)                  
                         .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -239,11 +241,13 @@ module.exports = {
         let final = request.params.datFinal;
         let cnpjCnv = request.params.convenio;
         let cpfSrv = request.params.servidor;
-        
+        let status = 'A';
+
         if (cnpjCnv === '0' && cpfSrv === '0') {
             const result1 = await connection('compras')
                 .where('cmpEmissao','>=', inicio)
                 .where('cmpEmissao','<=', final)
+                .where('cmpStatus', status)
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
                 .sum({totCmp : 'cmpVlrCompra'});
@@ -253,6 +257,7 @@ module.exports = {
                 const result2 = await connection('compras')
                     .where('cmpEmissao','>=', inicio)
                     .where('cmpEmissao','<=', final)
+                    .where('cmpStatus', status)
                     .where('servidores.usrCpf', cpfSrv)
                     .join('servidores', 'usrId', 'compras.cmpServidor')
                     .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -263,6 +268,7 @@ module.exports = {
                     const result3 = await connection('compras')
                         .where('cmpEmissao','>=', inicio)
                         .where('cmpEmissao','<=', final)
+                        .where('cmpStatus', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)                    
                         .join('servidores', 'usrId', 'compras.cmpServidor')
                         .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -272,6 +278,7 @@ module.exports = {
                     const result4 = await connection('compras')
                         .where('cmpEmissao','>=', inicio)
                         .where('cmpEmissao','<=', final)
+                        .where('cmpStatus', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)  
                         .where('servidores.usrCpf', cpfSrv)                  
                         .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -288,7 +295,7 @@ module.exports = {
         let final = request.params.dataFinal;
         let cnpjCnv = request.params.cnpjCnv;
         let cpfSrv = request.params.cpfSrv;
-
+        let status = 'A';
         //console.log('inicio:', inicio);
         //console.log('final:', final);
         //console.log('convenio:', cnpjCnv);
@@ -301,6 +308,7 @@ module.exports = {
             const result1 = await connection('compras')
                 .where('cmpEmissao','>=', inicio)
                 .where('cmpEmissao','<=', final)
+                .where('cmpStatus', status)
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
                 .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
@@ -311,6 +319,7 @@ module.exports = {
                 const result2 = await connection('compras')
                     .where('cmpEmissao','>=', inicio)
                     .where('cmpEmissao','<=', final)
+                    .where('cmpStatus', status)
                     .where('servidores.usrCpf', cpfSrv)
                     .join('servidores', 'usrId', 'compras.cmpServidor')
                     .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -321,6 +330,7 @@ module.exports = {
                     const result3 = await connection('compras')
                         .where('cmpEmissao','>=', inicio)
                         .where('cmpEmissao','<=', final)
+                        .where('cmpStatus', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)                    
                         .join('servidores', 'usrId', 'compras.cmpServidor')
                         .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -330,6 +340,7 @@ module.exports = {
                     const result4 = await connection('compras')
                         .where('cmpEmissao','>=', inicio)
                         .where('cmpEmissao','<=', final)
+                        .where('cmpStatus', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)  
                         .where('servidores.usrCpf', cpfSrv)                  
                         .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -346,7 +357,7 @@ module.exports = {
         let final = request.params.dataFinal;
         let cnpjCnv = request.params.cnpjCnv;
         let cpfSrv = request.params.cpfSrv;
-
+        let status = 'A';
         //console.log('inicio:', inicio);
         //console.log('final:', final);
         //console.log('convenio:', cnpjCnv);
@@ -359,6 +370,7 @@ module.exports = {
             const result1 = await connection('cmpParcelas')
                 .where('parVctParcela','>=', inicio)
                 .where('parVctParcela','<=', final)
+                .where('parStaParcela', status)
                 .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -370,6 +382,7 @@ module.exports = {
                 const result2 = await connection('cmpParcelas')
                     .where('parVctParcela','>=', inicio)
                     .where('parVctParcela','<=', final)
+                    .where('parStaParcela', status)
                     .where('servidores.usrCpf', cpfSrv)
                     .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
                     .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -381,6 +394,7 @@ module.exports = {
                     const result3 = await connection('cmpParcelas')
                         .where('parVctParcela','>=', inicio)
                         .where('parVctParcela','<=', final)
+                        .where('parStaParcela', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)         
                         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')           
                         .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -391,6 +405,7 @@ module.exports = {
                     const result4 = await connection('cmpParcelas')
                         .where('parVctParcela','>=', inicio)
                         .where('parVctParcela','<=', final)
+                        .where('parStaParcela', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)  
                         .where('servidores.usrCpf', cpfSrv)                 
                         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra') 
@@ -408,7 +423,7 @@ module.exports = {
         let final = request.params.datFinal;
         let cnpjCnv = request.params.convenio;
         let cpfSrv = request.params.servidor;
-
+        let status = 'A';
         //console.log('inicio:', inicio);
         //console.log('final:', final);
         //console.log('convenio:', cnpjCnv);
@@ -421,6 +436,7 @@ module.exports = {
             const result1 = await connection('cmpParcelas')
                 .where('parVctParcela','>=', inicio)
                 .where('parVctParcela','<=', final)
+                .where('parStaParcela', status)
                 .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -432,6 +448,7 @@ module.exports = {
                 const result2 = await connection('cmpParcelas')
                     .where('parVctParcela','>=', inicio)
                     .where('parVctParcela','<=', final)
+                    .where('parStaParcela', status)
                     .where('servidores.usrCpf', cpfSrv)
                     .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
                     .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -443,6 +460,7 @@ module.exports = {
                     const result3 = await connection('cmpParcelas')
                         .where('parVctParcela','>=', inicio)
                         .where('parVctParcela','<=', final)
+                        .where('parStaParcela', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)         
                         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')           
                         .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -453,6 +471,7 @@ module.exports = {
                     const result4 = await connection('cmpParcelas')
                         .where('parVctParcela','>=', inicio)
                         .where('parVctParcela','<=', final)
+                        .where('parStaParcela', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)  
                         .where('servidores.usrCpf', cpfSrv)                 
                         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra') 
@@ -470,7 +489,7 @@ module.exports = {
         let final = request.params.datFinal;
         let cnpjCnv = request.params.convenio;
         let cpfSrv = request.params.servidor;
-
+        let status = 'A';
         //console.log('inicio:', inicio);
         //console.log('final:', final);
         //console.log('convenio:', cnpjCnv);
@@ -483,6 +502,7 @@ module.exports = {
             const result1 = await connection('cmpParcelas')
                 .where('parVctParcela','>=', inicio)
                 .where('parVctParcela','<=', final)
+                .where('parStaParcela', status)
                 .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
@@ -494,6 +514,7 @@ module.exports = {
                 const result2 = await connection('cmpParcelas')
                     .where('parVctParcela','>=', inicio)
                     .where('parVctParcela','<=', final)
+                    .where('parStaParcela', status)
                     .where('servidores.usrCpf', cpfSrv)
                     .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
                     .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -505,6 +526,7 @@ module.exports = {
                     const result3 = await connection('cmpParcelas')
                         .where('parVctParcela','>=', inicio)
                         .where('parVctParcela','<=', final)
+                        .where('parStaParcela', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)         
                         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')           
                         .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -515,6 +537,7 @@ module.exports = {
                     const result4 = await connection('cmpParcelas')
                         .where('parVctParcela','>=', inicio)
                         .where('parVctParcela','<=', final)
+                        .where('parStaParcela', status)
                         .where('convenios.cnvCpfCnpj', cnpjCnv)  
                         .where('servidores.usrCpf', cpfSrv)                 
                         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra') 

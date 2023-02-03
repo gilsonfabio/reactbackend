@@ -19,25 +19,17 @@ module.exports = {
         console.log(nomeUsuario);
 
         const link = '';
-        const emailEnvio = 'gilsonfabio@innvento.com.br';
+        const emailEnvio = 'administrator@innvento.com.br';
 
-        const apiKey = process.env.SENDGRID_API_KEY;
-        const sgMail = require('@sendgrid/mail')
+        const apiKey = "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";
+        const sgMail = require('@sendgrid/mail');
 
         sgMail.setApiKey(apiKey)
         const msg = {
             to: emailUsuario,
             from: `${emailEnvio}`,
-            subject: 'Email para Recuperação de senha',
-            text: `Email de recuperação de senha servidor ${nomeUsuario}`,
-            attachments: [
-                {
-                  content: attachment,
-                  filename: "arquivo.txt",
-                  type: "text/plain",
-                  disposition: "attachment"
-                }
-            ],
+            subject: 'Email Venda Recuperado',
+            text: `Email de recuperação de venda do servidor ${nomeUsuario}`,            
             html: `<p>Olá, ${nomeUsuario}, </br></p><p>Você solicitou um email de recuperação de senha.</p></br> <p>Favor clicar no link abaixo para redefinir sua senha.</p></br>
                     <p><a href="https://sindicaldas.com.br/AltPassword/${emailUsuario}/${codUsuario}">Link de Recuperação de Senha</a></p>`,
         }
@@ -53,6 +45,17 @@ module.exports = {
         return response.json(user);  
         
     },   
+
+    /*
+    attachments: [
+                {
+                  content: attachment,
+                  filename: "arquivo.txt",
+                  type: "text/plain",
+                  disposition: "attachment"
+                }
+            ],
+    */        
 
     async recPassword(request, response) {
         const emailUsuario = request.params.email;

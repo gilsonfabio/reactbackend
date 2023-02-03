@@ -75,6 +75,7 @@ routes.get('/loginCnv/:email/:password', ConveniosController.signIn);
 routes.put('/updPassCnv/:emailUsuario', ConveniosController.updPassCnv);
 routes.put('/updSnhCnvCanc/:emailUsuario', ConveniosController.updSnhCnvCanc);
 routes.get('/classCnv/:search', ConveniosController.classCnv);
+routes.get('/signInCnc/:email/:password', ConveniosController.signInCnc);
 
 routes.get('/loginSrv/:email/:password', UsersController.loginSrv);
 
@@ -100,6 +101,9 @@ routes.post('/newcompra', ComprasController.create);
 routes.get('/altcompra/:idCmp', ComprasController.searchCompras);
 routes.get('/cmpConvenio/:idCnv', ComprasController.cmpConvenio);
 routes.get('/cmpServidor/:idSrv', ComprasController.cmpServidor);
+routes.get('/dadCompra/:idCmp', ComprasController.dadCompra);
+routes.get('/parCompra/:idCmp', ParcelasController.parCompra);
+routes.put('/cncCompra/:idCmp', ComprasController.cncCompra);
 
 routes.get('/findCompras/:datVencto', ComprasController.cmpVencto);
 routes.get('/totCompras/:datVencto', ComprasController.totCompras);
@@ -135,8 +139,8 @@ routes.get('/pdfCmpEmissao', PdfsController.pdfCmpEmissao);
 routes.get('/pdfCmpEmis/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfCmpEmis);
 routes.get('/pdfVctCompras/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfVctCompras);
 routes.get('/pdfVctCmpSrv/:datInicial/:datFinal/:codServidor', PdfsController.pdfVctCmpSrv);
-routes.get('/pdfVctCmpCnv/:datInicial/:datFinal/:codConvenio', PdfsController.pdfVctCmpCnv);
-routes.get('/pdfEmiCmpCnv/:datInicial/:datFinal/:codConvenio', PdfsController.pdfEmiCmpCnv);
+routes.get('/pdfVctCmpCnv/:datInicial/:datFinal/:cnvId', PdfsController.pdfVctCmpCnv);
+routes.get('/pdfEmiCmpCnv/:datInicial/:datFinal/:cnvId', PdfsController.pdfEmiCmpCnv);
 
 routes.get('/downloadTxt/:datInicial/:orgId', DownloadsController.downTexto);
 

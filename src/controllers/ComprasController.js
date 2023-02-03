@@ -1,13 +1,18 @@
 const moment = require('moment');
 const connection = require('../database/connection');
+require('dotenv/config');
+
+const nodemailer = require("nodemailer");
 
 module.exports = {   
     async index (request, response) {
         let datSearch = moment('2022-01-15').format('YYYY-MM-DD');
+        let status = 'A';
         //const votHora = moment().format('hh:mm:ss');
 
         const compras = await connection('cmpParcelas')
         .where('parVctParcela', datSearch)
+        .where('parStaParcela', status)
         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
         .join('servidores', 'usrId', 'compras.cmpServidor')
         .orderBy('parVctParcela')
@@ -18,11 +23,13 @@ module.exports = {
     
     async cmpConvenio (request, response) {
         let id = request.params.idCnv;
-
+        let status = 'A';
         const compras = await connection('compras')
         .where('cmpConvenio', id)
+        .where('cmpStatus', status)
         .join('servidores', 'usrId', 'compras.cmpServidor')
         .orderBy('cmpId', 'desc')
+        .limit(20)
         .select(['compras.*', 'servidores.usrNome']);
 
         return response.json(compras);
@@ -30,16 +37,36 @@ module.exports = {
 
     async cmpServidor (request, response) {
         let id = request.params.idSrv;
+        let status = 'A';
 
         const compras = await connection('compras')
         .where('cmpServidor', id)
+        .where('cmpStatus', status)
+        .join('servidores', 'usrId', 'compras.cmpServidor')
+        .join('convenios', 'cnvId', 'compras.cmpConvenio')
+        .limit(20)
+        .orderBy('cmpId', 'desc')
+        .select(['compras.*', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
+
+        return response.json(compras);
+    },  
+    
+    async dadCompra (request, response) {
+        let id = request.params.idCmp;
+        let status = 'A';
+
+        const compras = await connection('compras')
+        .where('cmpId', id)
+        .where('cmpStatus', 'A')
         .join('servidores', 'usrId', 'compras.cmpServidor')
         .join('convenios', 'cnvId', 'compras.cmpConvenio')
         .orderBy('cmpId', 'desc')
         .select(['compras.*', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
 
+        console.log(compras)
+        
         return response.json(compras);
-    },    
+    },  
 
     async create(request, response) {
         const { cmpEmissao, cmpHorEmissao, cmpConvenio, cmpQtdParcela, cmpVlrCompra, cmpServidor, cmpCodSeguranca, cmpStatus } = request.body;
@@ -96,6 +123,7 @@ module.exports = {
                 parIdCompra: idCompra,
                 parNroParcela: parcela,
                 parVctParcela: vctParcela,
+                parVlrCompra: vlrProcess,
                 parVlrParcela: vlrProcess,
                 parStaParcela: staParcela,                
             });
@@ -114,15 +142,71 @@ module.exports = {
                 .increment({usrVlrUsado: vlrParcela})
                 .decrement({usrVlrDisponivel: vlrParcela});
         }
+
+        const conv = await connection('convenios')
+        .where('cnvId', cmpConvenio)
+        .select('cnvEmail', 'cnvNomFantasia')
+        .first();
+
+        if (!conv) {
+            return response.status(400).json({ error: 'Não encontrou usuario com este email'});
+        } 
+
+        let codUsuario = conv.cnvId;
+        let emailCco = conv.cnvEmail; 
+        let nomFantasia = conv.cnvNomFantasia;
         
-        return response.json({cmpId});
+        const user = await connection('servidores')
+        .where('usrId', cmpServidor)
+        .select('usrEmail', 'usrId', 'usrNome')
+        .first();
+
+        if (!conv) {
+            return response.status(400).json({ error: 'Não encontrou usuario com este email'});
+        } 
+
+        let codDest = user.usrId;
+        let emailDest = user.usrEmail;
+        let nomeUsuario = user.usrNome;
+
+        const admEmail = process.env.EMAIL_USER;
+        console.log('Email usuario:', admEmail)
+
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+            tls: {
+                rejectUnauthorized: false,
+            },
+        });
+
+        const mailSent = await transporter.sendMail({
+            text: "Texto do E-mail teste",
+            subject: "Assunto do e-mail",
+            from: `${nomFantasia} - ${nomeUsuario} ` ,
+            to: [`${emailDest}, ${emailCco}`],
+            html: `<p>Olá, ${nomeUsuario}, </br></p><p>Você realizou uma compra no seu cartão Sindicaldas.</p></br> <p>Convênio: ${nomFantasia} Valor: ${cmpVlrCompra}</p></br> 
+                    <p>Obrigado!</p>`
+                            
+        });
+        console.log(mailSent);
+        return response.status(200).send();  
+        
+        //return response.json({cmpId});
     },
 
     async searchCompras (request, response) {
         let id = request.params.idCmp;
+        let status = 'A';
 
         const compra = await connection('compras')
         .where('cmpId', id)
+        .where('cmpStatus', status)
         .select('*');
 
         return response.json(compra);
@@ -153,8 +237,11 @@ module.exports = {
 
     async cmpVencto (request, response) {
         let datSearch = request.params.datVencto;
+        let status = 'A';
+
         const compras = await connection('cmpParcelas')
         .where('parVctParcela', datSearch)
+        .where('parStaParcela', status)
         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
         .join('servidores', 'usrId', 'compras.cmpServidor')
         .orderBy('parVctParcela')
@@ -167,8 +254,10 @@ module.exports = {
     async cmpOrgVenc (request, response) {
         let datSearch = request.params.datVencto;
         let idOrg = request.params.orgao;
+        let status = 'A';
         const compras = await connection('cmpParcelas')
         .where('parVctParcela', datSearch)
+        .where('parStaParcela', status)
         .where('orgId', idOrg)
         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
         .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -183,8 +272,10 @@ module.exports = {
 
     async totCompras (request, response) {
         let datSearch = request.params.datVencto;
+        let status = 'A';
         const total = await connection('cmpParcelas')
         .where('parVctParcela', datSearch)
+        .where('parStaParcela', status)
         .sum({totCmp : 'parVlrParcela'});
 
         return response.json(total);
@@ -194,8 +285,11 @@ module.exports = {
     async totCmpOrgao (request, response) {
         let datSearch = request.params.datVencto;
         let idOrg = request.params.orgao;
+        let status = 'A';
+        
         const total = await connection('cmpParcelas')
         .where('parVctParcela', datSearch)
+        .where('parStaParcela', status)
         .where('orgId', idOrg)
         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
         .join('servidores', 'usrId', 'compras.cmpServidor')
@@ -206,4 +300,30 @@ module.exports = {
         return response.json(total);
 
     },   
+
+    async cncCompra(request, response) {
+         
+        let id = request.params.idCmp;
+        const { cmpIdCanc } = request.body;
+         
+        let administrador = request.body.cmpIdCanc;
+        let datCanc = new Date; 
+        let status = 'C';      
+        const cncCompra = await connection('compras')
+            .where('cmpId',id)
+            .update(
+                cmpResCancel = administrador,
+                cmpDatCancel = datCanc,
+                cmpStatus = status
+            );
+                
+        const cncParcelas = await connection('cmpParcelas')
+            .where('parIdCompra',id)
+            .update(
+                parStaParcela = status,
+            )
+
+        return response.json({cncCompra});
+    },
+    
 };
