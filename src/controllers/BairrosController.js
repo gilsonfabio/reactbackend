@@ -2,7 +2,9 @@ const connection = require('../database/connection');
 
 module.exports = {   
     async index (request, response) {
-        const bairros = await connection('bairros').select('*');
+        const bairros = await connection('bairros')
+        .orderBy('baiDescricao')
+        .select('*');
     
         return response.json(bairros);
     },    
