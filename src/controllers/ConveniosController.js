@@ -147,7 +147,9 @@ module.exports = {
             cnvBairro,
             cnvCidade,
             cnvEstado,
-            cnvCep} = request.body;
+            cnvCep,
+            cnvPassword,
+            cnvCanPassword} = request.body;
 
         let datUpdate = new Date();
         await connection('convenios').where('cnvId', id)   
@@ -163,7 +165,9 @@ module.exports = {
             cnvBairro,
             cnvCidade,
             cnvEstado,
-            cnvCep          
+            cnvCep,
+            cnvPassword,
+            cnvCanPassword          
         });
            
         return response.status(204).send();
