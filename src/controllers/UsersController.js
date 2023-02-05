@@ -232,15 +232,15 @@ module.exports = {
         let id = request.params.cartao;
         let senha = request.params.password;
 
-        //console.log(id);
-        //console.log(senha);
+        console.log(id);
+        console.log(senha);
 
         var encodedVal = crypto.createHash('md5').update(senha).digest('hex');
         const user = await connection('servidores')
             .where('usrCartao', id)
             .where('usrPassword', encodedVal)
             .join('tipcontratos', 'idTip', 'servidores.usrTipContrato') 
-            .select(['servidores.*','tipcontratos.tipId','tipcontratos.tipDescricao','tipcontratos.tipParcelas'])
+            .select(['servidores.*','tipcontratos.idTip','tipcontratos.tipDescricao','tipcontratos.tipParcelas'])
             .first();
           
         if (!user) {
