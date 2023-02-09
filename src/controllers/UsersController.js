@@ -438,7 +438,8 @@ module.exports = {
             usrNasConjuge, 
             usrObsBloqueio,
             usrPai,
-            usrMae } = request.body;
+            usrMae,
+            usrPassword } = request.body;
         
         let datUpdate = new Date();
         //var datNascimento = new Date(usrNascimento);
@@ -477,7 +478,8 @@ module.exports = {
             usrNasConjuge,
             usrObsBloqueio,
             usrPai,
-            usrMae             
+            usrMae,
+            usrPassword             
         });
            
         return response.status(204).send();
