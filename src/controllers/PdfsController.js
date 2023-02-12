@@ -53,7 +53,7 @@ module.exports = {
             .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
             .join('servidores', 'usrId', 'compras.cmpServidor')
             .join('convenios', 'cnvId', 'compras.cmpConvenio')
-            .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
+            .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvNomFantasia']);
 
         return response.json(vctcompras);
     }, 
@@ -374,7 +374,7 @@ module.exports = {
                 .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
-                .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
             //console.log(result1)
             return response.json(result1)
         }else {
@@ -387,7 +387,7 @@ module.exports = {
                     .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')
                     .join('servidores', 'usrId', 'compras.cmpServidor')
                     .join('convenios', 'cnvId', 'compras.cmpConvenio')
-                    .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
                 return response.json(result2)    
             }else{
                 if (cnpjCnv != '0' && cpfSrv === '0') {
@@ -399,7 +399,7 @@ module.exports = {
                         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra')           
                         .join('servidores', 'usrId', 'compras.cmpServidor')
                         .join('convenios', 'cnvId', 'compras.cmpConvenio')
-                        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
                     return response.json(result3)
                 }else {
                     const result4 = await connection('cmpParcelas')
@@ -411,7 +411,7 @@ module.exports = {
                         .join('compras', 'cmpId', 'cmpParcelas.parIdCompra') 
                         .join('servidores', 'usrId', 'compras.cmpServidor')
                         .join('convenios', 'cnvId', 'compras.cmpConvenio')
-                        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                        .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrCpf', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
                     return response.json(result4) 
                 }
             }

@@ -22,7 +22,7 @@ module.exports = {
             .join('secretarias', 'secId', 'servidores.usrSecretaria')
             .join('orgadmin', 'orgId', 'secretarias.secOrgAdm')
             .select(['cmpParcelas.*', 'compras.cmpEmissao', 'compras.cmpServidor', 'compras.cmpConvenio', 'servidores.usrMatricula', 'servidores.usrNome', 'convenios.cnvNomFantasia','secretarias.secOrgAdm', 'orgadmin.orgId']);
-         
+        
         var nome_arquivo = 'arquivo.txt'
         console.log(nome_arquivo);
         var separacao = ';' 

@@ -149,3 +149,4 @@ routes.post('/newtipo', TiposController.create);
 routes.put('/alttipo/:tipId', TiposController.updateTip);
 
 module.exports = routes;
+
