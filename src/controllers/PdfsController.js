@@ -557,8 +557,8 @@ module.exports = {
         let year = datProcess.getFullYear();
         let month = datProcess.getMonth() + 1;
         
-        console.log(year);
-        console.log(month);
+        //console.log(year);
+        //console.log(month);
 
         const totaliza = await connection('totVdaCnv')
         .where('tcnvMes',month)
@@ -566,7 +566,7 @@ module.exports = {
         .join('convenios', 'cnvId', 'totVdaCnv.tcnvId')
         .select(['totVdaCnv.*', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
         
-        console.log(totaliza);
+        //console.log(totaliza);
 
         return response.json(totaliza);
     }, 
