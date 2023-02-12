@@ -142,6 +142,8 @@ routes.get('/pdfVctCmpSrv/:datInicial/:datFinal/:codServidor', PdfsController.pd
 routes.get('/pdfVctCmpCnv/:datInicial/:datFinal/:cnvId', PdfsController.pdfVctCmpCnv);
 routes.get('/pdfEmiCmpCnv/:datInicial/:datFinal/:cnvId', PdfsController.pdfEmiCmpCnv);
 
+routes.get('/pdfExtAdm/:dataInicial', PdfsController.pdfExtAdm);
+
 routes.get('/downloadTxt/:datInicial/:orgId', DownloadsController.downTexto);
 
 routes.get('/tipos', TiposController.index);

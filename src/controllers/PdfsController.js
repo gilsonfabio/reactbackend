@@ -28,7 +28,7 @@ module.exports = {
         .where('cmpStatus', 'status')
         .join('servidores', 'usrId', 'compras.cmpServidor')
         .join('convenios', 'cnvId', 'compras.cmpConvenio')
-        .select(['compras.*', 'servidores.usrNome', 'convenios.cnvId', 'convenios.cnvNomFantasia']);
+        .select(['compras.*', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvId', 'convenios.cnvNomFantasia']);
 
         return response.json(compras);
     }, 
@@ -311,7 +311,7 @@ module.exports = {
                 .where('cmpStatus', status)
                 .join('servidores', 'usrId', 'compras.cmpServidor')
                 .join('convenios', 'cnvId', 'compras.cmpConvenio')
-                .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
             //console.log(result1)
             return response.json(result1)
         }else {
@@ -323,7 +323,7 @@ module.exports = {
                     .where('servidores.usrCpf', cpfSrv)
                     .join('servidores', 'usrId', 'compras.cmpServidor')
                     .join('convenios', 'cnvId', 'compras.cmpConvenio')
-                    .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                    .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
                 return response.json(result2)    
             }else{
                 if (cnpjCnv != '0' && cpfSrv === '0') {
@@ -334,7 +334,7 @@ module.exports = {
                         .where('convenios.cnvCpfCnpj', cnpjCnv)                    
                         .join('servidores', 'usrId', 'compras.cmpServidor')
                         .join('convenios', 'cnvId', 'compras.cmpConvenio')
-                        .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                        .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
                     return response.json(result3)
                 }else {
                     const result4 = await connection('compras')
@@ -345,7 +345,7 @@ module.exports = {
                         .where('servidores.usrCpf', cpfSrv)                  
                         .join('servidores', 'usrId', 'compras.cmpServidor')
                         .join('convenios', 'cnvId', 'compras.cmpConvenio')
-                        .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+                        .select(['compras.*', 'servidores.usrCpf', 'servidores.usrNome', 'servidores.usrMatricula', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
                     return response.json(result4) 
                 }
             }
@@ -548,5 +548,27 @@ module.exports = {
                 }
             }
         }     
+    },
+    
+    async pdfExtAdm (request, response) {
+        let inicio = request.params.dataInicial;
+
+        let datProcess = new Date(inicio);
+        let year = datProcess.getFullYear();
+        let month = datProcess.getMonth() + 1;
+        
+        console.log(year);
+        console.log(month);
+
+        const totaliza = await connection('totVdaCnv')
+        .where('tcnvMes',month)
+        .where('tcnvAno',year)
+        .join('convenios', 'cnvId', 'totVdaCnv.tcnvId')
+        .select(['totVdaCnv.*', 'convenios.cnvCpfCnpj', 'convenios.cnvNomFantasia']);
+        
+        console.log(totaliza);
+
+        return response.json(totaliza);
     }, 
+
 };

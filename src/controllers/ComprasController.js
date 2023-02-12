@@ -127,7 +127,39 @@ module.exports = {
                 parVlrParcela: vlrProcess,
                 parStaParcela: staParcela,                
             });
+
+            const cnv = await connection('convenios')
+            .where('cnvId',cmpConvenio)
+            .join('txaadmin', 'txaId', 'convenios.cnvAtividade')
+            .select(['cnvId','txaadmin.txaPerc']);
             
+            let perSist = 25;
+            let auxParcela = vlrProcess;
+            let auxTaxa = ((auxParcela * cnv.txaPerc) / 100);
+            let auxLiquido = auxParcela - auxTaxa; 
+            let auxSistema = ((auxTaxa * perSist) / 100);
+
+            const updConv = await connection('totVdaCnv')
+            .where('tcnvId',cmpConvenio)
+            .where('tcnvMes',month)
+            .where('tcnvAno',year)
+            .increment({tcnvVlrTotal: auxParcela})
+            .increment({tcnvVlrTaxa: auxTaxa})
+            .increment({tcnvVlrLiquido: auxLiquido})
+            .increment({tcnvVlrSistema: auxSistema});
+
+            if (!updConv) {
+                const [totaliza] = await connection('totVdaCnv').insert({
+                    tcnvId: idCnv,
+                    tcnvAno: year,
+                    tcnvMes: month,
+                    tcnvVlrTotal: auxParcela,
+                    tcnvVlrTaxa: auxTaxa,
+                    tcnvVlrLiquido: auxLiquido,
+                    tcnvVlrSistema: auxSistema,                
+                });
+            }
+
             const usr = await connection('servidores')
             .where('usrId',servidor)
             .select('usrCartao');
