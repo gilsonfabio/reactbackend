@@ -73,7 +73,10 @@ module.exports = {
          
         let servidor = request.body.cmpServidor;
         let convenio = request.body.cmpConvenio;
-          
+        const emiCompra = request.body.cmpEmissao;
+        const qtdParc = request.body.cmpQtdParcela;
+        const vlrCompra = request.body.cmpVlrCompra;
+        
         const [cmpId] = await connection('compras').insert({
             cmpEmissao, 
             cmpHorEmissao, 
@@ -134,9 +137,11 @@ module.exports = {
             .join('atividades', 'atvId', 'convenios.cnvAtividade')
             .select(['cnvId','atividades.atvTaxAdm']);
             
+            let taxa = parseInt(cnv[0].atvTaxAdm)
+            
             let perSist = 25;
             let auxParcela = vlrProcess;
-            let auxTaxa = ((auxParcela * cnv.atvTaxAdm) / 100);
+            let auxTaxa = ((auxParcela * taxa) / 100);
             let auxLiquido = auxParcela - auxTaxa; 
             let auxSistema = ((auxTaxa * perSist) / 100);
 
@@ -163,9 +168,9 @@ module.exports = {
 
             const usr = await connection('servidores')
             .where('usrId',servidor)
-            .select('usrCartao');
+            .select('usrCartao', 'usrEmail', 'usrNome');
 
-            let nroCartao = usr[0].usrCartao;
+            let nroCartao = usr[0].usrCartao;            
             //console.log('Cartão:',nroCartao);
 
             const updServ = await connection('usrSaldo')
@@ -176,7 +181,6 @@ module.exports = {
                 .decrement({usrVlrDisponivel: vlrParcela});
         }
 
-            
         const conv = await connection('convenios')
         .where('cnvId', cmpConvenio)
         .select('cnvEmail', 'cnvNomFantasia')
@@ -185,6 +189,15 @@ module.exports = {
         if (!conv) {
             return response.status(400).json({ error: 'Não encontrou usuario com este email'});
         } 
+
+        const serv = await connection('servidores')
+        .where('usrId', cmpServidor)
+        .select('usrEmail', 'usrNome')
+        .first();
+        
+        const emailUsuario = serv.usrEmail;
+        const nomServidor = serv.usrNome;
+
         let admEmail = process.env.EMAIL_USER;
         let hostEmail = process.env.EMAIL_HOST;
         let portEmail =  process.env.EMAIL_PORT;
@@ -206,22 +219,25 @@ module.exports = {
             text: `Confirmação de Compra`,
             subject: "E-mail de confirmação de compra no cartão CaldasCard",
             from: process.env.EMAIL_FROM,
-            to: 'gilsonfabio@gmail.com',
+            to: emailUsuario,
+            cc: 'gilsonfabio@gmail.com',
             html: `
             <html>
             <body>
-                <center><h1>Olá ,<h1></center>
-                <center><p>Você solicitou um código de segurança para recuperação de senha de acesso ao PORTAL DE CALDASCARD</p></center></b></b>
-                <center><p>Utilize o código de segurança abaixo para validar alteração da senha</p></center></b></b>
-                <center><h3>Código de Segurança:</h3></center></b></b></b>
+                <center><h1>Olá ,${nomServidor}<h1></center>
+                <center><p>Você efetuou uma compra com o seu cartão CALDASCARD</p></center></b></b>
+                <center><p>Dados da Compra</p></center></b></b>
+                <center><h3>Codigo da Compra:${idCompra}</h3></center></b></b></b>
+                <center><h3>Emissão Compra:${emiCompra}</h3></center></b></b></b>
+                <center><h3>Qtde de Parcelas:${qtdParc}</h3></center></b></b></b>
+                <center><h3>Valor da Compra:${vlrCompra}</h3></center></b></b></b>
                 <center><img src="public/logo-barra.png" alt="CaldasCard" align="center" width="300px" height="120" /></center>
             </body>
           </html> 
             `,
         });
-        console.log(mailSent);
-        
-                
+        //console.log(mailSent);
+                        
         return response.status(200).send();  
     },    
     

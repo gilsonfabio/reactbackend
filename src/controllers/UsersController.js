@@ -232,8 +232,8 @@ module.exports = {
         let id = request.params.cartao;
         let senha = request.params.password;
 
-        console.log(id);
-        console.log(senha);
+        //console.log(id);
+        //console.log(senha);
 
         var encodedVal = crypto.createHash('md5').update(senha).digest('hex');
         const user = await connection('servidores')
