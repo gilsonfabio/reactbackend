@@ -183,55 +183,44 @@ module.exports = {
         if (!conv) {
             return response.status(400).json({ error: 'Não encontrou usuario com este email'});
         } 
-
-        let codUsuario = conv.cnvId;
-        let emailCco = conv.cnvEmail; 
-        let nomFantasia = conv.cnvNomFantasia;
-        
-        const user = await connection('servidores')
-        .where('usrId', cmpServidor)
-        .select('usrEmail', 'usrId', 'usrNome')
-        .first();
-
-        if (!conv) {
-            return response.status(400).json({ error: 'Não encontrou usuario com este email'});
-        } 
-
-        let codDest = user.usrId;
-        let emailDest = user.usrEmail;
-        let nomeUsuario = user.usrNome;
-
-        const admEmail = process.env.EMAIL_USER;
-        console.log('Email usuario:', admEmail)
+        let admEmail = process.env.EMAIL_USER;
+        let hostEmail = process.env.EMAIL_HOST;
+        let portEmail =  process.env.EMAIL_PORT;
 
         const transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
-            secure: false,
+            secure: true,
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
             },
             tls: {
-                rejectUnauthorized: false,
+              rejectUnauthorized: false,
             },
         });
 
         const mailSent = await transporter.sendMail({
-            text: "Texto do E-mail teste",
-            subject: "Assunto do e-mail",
-            from: `${nomFantasia} - ${nomeUsuario} ` ,
-            to: [`${emailDest}, ${emailCco}`],
-            html: `<p>Olá, ${nomeUsuario}, </br></p><p>Você realizou uma compra no seu cartão Sindicaldas.</p></br> <p>Convênio: ${nomFantasia} Valor: ${cmpVlrCompra}</p></br> 
-                    <p>Obrigado!</p>`
-                            
+            text: `Confirmação de Compra`,
+            subject: "E-mail de confirmação de compra no cartão CaldasCard",
+            from: process.env.EMAIL_FROM,
+            to: 'gilsonfabio@gmail.com',
+            html: `
+            <html>
+            <body>
+                <center><h1>Olá ,<h1></center>
+                <center><p>Você solicitou um código de segurança para recuperação de senha de acesso ao PORTAL DE CALDASCARD</p></center></b></b>
+                <center><p>Utilize o código de segurança abaixo para validar alteração da senha</p></center></b></b>
+                <center><h3>Código de Segurança:</h3></center></b></b></b>
+                <center><img src="public/logo-barra.png" alt="CaldasCard" align="center" width="300px" height="120" /></center>
+            </body>
+          </html> 
+            `,
         });
         console.log(mailSent);
         return response.status(200).send();  
-        
-        //return response.json({cmpId});
-    },
-
+    },    
+    
     async searchCompras (request, response) {
         let id = request.params.idCmp;
         let status = 'A';
