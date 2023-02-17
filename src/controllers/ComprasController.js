@@ -131,8 +131,8 @@ module.exports = {
 
             const cnv = await connection('convenios')
             .where('cnvId',convenio)
-            .join('txaadmin', 'txaId', 'convenios.cnvAtividade')
-            .select(['cnvId','txaadmin.txaPerc']);
+            .join('taxadmin', 'txaId', 'convenios.cnvAtividade')
+            .select(['cnvId','taxadmin.txaPerc']);
             
             let perSist = 25;
             let auxParcela = vlrProcess;
@@ -176,7 +176,7 @@ module.exports = {
                 .decrement({usrVlrDisponivel: vlrParcela});
         }
 
-        /*    
+            
         const conv = await connection('convenios')
         .where('cnvId', cmpConvenio)
         .select('cnvEmail', 'cnvNomFantasia')
@@ -220,7 +220,7 @@ module.exports = {
             `,
         });
         console.log(mailSent);
-        */
+        
                 
         return response.status(200).send();  
     },    
