@@ -175,6 +175,7 @@ module.exports = {
                 .decrement({usrVlrDisponivel: vlrParcela});
         }
 
+        /*    
         const conv = await connection('convenios')
         .where('cnvId', cmpConvenio)
         .select('cnvEmail', 'cnvNomFantasia')
@@ -218,6 +219,8 @@ module.exports = {
             `,
         });
         console.log(mailSent);
+        */
+                
         return response.status(200).send();  
     },    
     
