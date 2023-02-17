@@ -131,12 +131,12 @@ module.exports = {
 
             const cnv = await connection('convenios')
             .where('cnvId',convenio)
-            .join('taxadmin', 'txaId', 'convenios.cnvAtividade')
-            .select(['cnvId','taxadmin.txaPerc']);
+            .join('atividades', 'atvId', 'convenios.cnvAtividade')
+            .select(['cnvId','atividades.atvTaxAdm']);
             
             let perSist = 25;
             let auxParcela = vlrProcess;
-            let auxTaxa = ((auxParcela * cnv.txaPerc) / 100);
+            let auxTaxa = ((auxParcela * cnv.atvTaxAdm) / 100);
             let auxLiquido = auxParcela - auxTaxa; 
             let auxSistema = ((auxTaxa * perSist) / 100);
 
