@@ -72,6 +72,7 @@ module.exports = {
         const { cmpEmissao, cmpHorEmissao, cmpConvenio, cmpQtdParcela, cmpVlrCompra, cmpServidor, cmpCodSeguranca, cmpStatus } = request.body;
          
         let servidor = request.body.cmpServidor;
+        let convenio = request.body.cmpConvenio;
           
         const [cmpId] = await connection('compras').insert({
             cmpEmissao, 
@@ -129,7 +130,7 @@ module.exports = {
             });
 
             const cnv = await connection('convenios')
-            .where('cnvId',cmpConvenio)
+            .where('cnvId',convenio)
             .join('txaadmin', 'txaId', 'convenios.cnvAtividade')
             .select(['cnvId','txaadmin.txaPerc']);
             
@@ -140,7 +141,7 @@ module.exports = {
             let auxSistema = ((auxTaxa * perSist) / 100);
 
             const updConv = await connection('totVdaCnv')
-            .where('tcnvId',cmpConvenio)
+            .where('tcnvId',convenio)
             .where('tcnvMes',month)
             .where('tcnvAno',year)
             .increment({tcnvVlrTotal: auxParcela})
@@ -150,7 +151,7 @@ module.exports = {
 
             if (!updConv) {
                 const [totaliza] = await connection('totVdaCnv').insert({
-                    tcnvId: idCnv,
+                    tcnvId: convenio,
                     tcnvAno: year,
                     tcnvMes: month,
                     tcnvVlrTotal: auxParcela,
@@ -165,7 +166,7 @@ module.exports = {
             .select('usrCartao');
 
             let nroCartao = usr[0].usrCartao;
-            console.log('Cartão:',nroCartao);
+            //console.log('Cartão:',nroCartao);
 
             const updServ = await connection('usrSaldo')
                 .where('usrServ',nroCartao)
