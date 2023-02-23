@@ -352,17 +352,17 @@ module.exports = {
         let status = 'C';      
         const cncCompra = await connection('compras')
             .where('cmpId',id)
-            .update(
-                cmpResCancel = administrador,
-                cmpDatCancel = datCanc,
-                cmpStatus = status
-            );
+            .update({
+                cmpResCancel: administrador,
+                cmpDatCancel: datCanc,
+                cmpStatus: status
+        });
                 
         const cncParcelas = await connection('cmpParcelas')
             .where('parIdCompra',id)
-            .update(
-                parStaParcela = status,
-            )
+            .update({
+                parStaParcela: status,
+        })
 
         return response.json({cncCompra});
     },
