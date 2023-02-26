@@ -63,7 +63,7 @@ module.exports = {
         .orderBy('cmpId', 'desc')
         .select(['compras.*', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
 
-        console.log(compras)
+        //console.log(compras)
         
         return response.json(compras);
     },  
@@ -88,10 +88,16 @@ module.exports = {
             cmpStatus        
         });
 
-        var datProcess = new Date();
-        var year = datProcess.getFullYear();
-        var month = datProcess.getMonth();
-        var day = 15;
+        let datProcess = new Date();
+        let year = datProcess.getFullYear();
+        let month = datProcess.getMonth();
+        let day = datProcess.getDate();
+        let dayVct = 15;    
+
+        //console.log(datProcess);
+        //console.log('Ano:', year);
+        //console.log('Mes:', month);
+        //console.log('Dia:', day);
 
         const horProcess = moment().format('hh:mm:ss');        
         const idCompra = cmpId;    
@@ -105,16 +111,31 @@ module.exports = {
 
         let staParcela = 'A';
         
-        for (var i = 1; i <= cmpQtdParcela; i++) {
-            var parcela = i;
+        for (let i = 1; i <= cmpQtdParcela; i++) {
+            let parcela = i;
 
-            month = month + 1;
-            if (month === 13) {
-                month = 1;
-                year = year + 1; 
+            if (parcela === 1 ) {
+                if (day > 15 ) {
+                    month = month + 1;
+                    if (month === 13) {
+                        month = 1;
+                        year = year + 1; 
+                    }
+                }    
+            }else {
+                month = month + 1;
+                if (month === 13) {
+                    month = 1;
+                    year = year + 1; 
+                }
             }
 
-            var vctParcela = new Date(year,month,day);
+            let vctParcela = new Date(year,month,dayVct);
+            
+            //console.log('Vencimento parcela:',vctParcela);
+
+            let anoParc = vctParcela.getFullYear();
+            let mesParc = vctParcela.getMonth() + 1;
 
             let vlrProcess = 0;
             if (i === 1 ) {
@@ -145,10 +166,12 @@ module.exports = {
             let auxLiquido = auxParcela - auxTaxa; 
             let auxSistema = ((auxTaxa * perSist) / 100);
 
+            //console.log('mes totalizador de vendas convenio:', mesParc);
+
             const updConv = await connection('totVdaCnv')
             .where('tcnvId',convenio)
-            .where('tcnvMes',month)
-            .where('tcnvAno',year)
+            .where('tcnvMes',mesParc)
+            .where('tcnvAno',anoParc)
             .increment({tcnvVlrTotal: auxParcela})
             .increment({tcnvVlrTaxa: auxTaxa})
             .increment({tcnvVlrLiquido: auxLiquido})
@@ -172,15 +195,16 @@ module.exports = {
 
             let nroCartao = usr[0].usrCartao;            
             //console.log('Cartão:',nroCartao);
-            //console.log('mes:',month);
-            //console.log('ano:',year);
+            //console.log('mes:',mesParc);
+            //console.log('ano:',anoParc);
 
             const updServ = await connection('usrSaldo')
                 .where('usrServ',nroCartao)
-                .where('usrMes',month)
-                .where('usrAno',year)
+                .where('usrMes',mesParc)
+                .where('usrAno',anoParc)
                 .increment({usrVlrUsado: vlrParcela})
                 .decrement({usrVlrDisponivel: vlrParcela});
+        
         }
 
         const conv = await connection('convenios')
@@ -224,6 +248,7 @@ module.exports = {
             subject: "E-mail de confirmação de compra no cartão CaldasCard",
             from: process.env.EMAIL_FROM,
             to: emailUsuario,
+            cc: emailConv,
             html: `
             <html>
             <body>

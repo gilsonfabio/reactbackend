@@ -29,6 +29,9 @@ module.exports = {
         const conv = await connection('convenios')
             .where('cnvEmail', emailCnv)
             .where('cnvPassword', encodedVal)
+
+
+            
             .select('cnvId', 'cnvNomFantasia')
             .first();
           
