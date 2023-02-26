@@ -172,6 +172,8 @@ module.exports = {
 
             let nroCartao = usr[0].usrCartao;            
             //console.log('Cartão:',nroCartao);
+            //console.log('mes:',month);
+            //console.log('ano:',year);
 
             const updServ = await connection('usrSaldo')
                 .where('usrServ',nroCartao)
@@ -189,6 +191,8 @@ module.exports = {
         if (!conv) {
             return response.status(400).json({ error: 'Não encontrou usuario com este email'});
         } 
+
+        let emailConv = conv.cnvEmail;
 
         const serv = await connection('servidores')
         .where('usrId', cmpServidor)
@@ -220,7 +224,6 @@ module.exports = {
             subject: "E-mail de confirmação de compra no cartão CaldasCard",
             from: process.env.EMAIL_FROM,
             to: emailUsuario,
-            cc: 'gilsonfabio@gmail.com',
             html: `
             <html>
             <body>

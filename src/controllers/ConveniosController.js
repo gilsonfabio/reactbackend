@@ -151,6 +151,9 @@ module.exports = {
             cnvPassword,
             cnvCanPassword} = request.body;
 
+        var snhConvenio = crypto.createHash('md5').update(cnvPassword).digest('hex');
+        var snhCancelamento = crypto.createHash('md5').update(cnvCanPassword).digest('hex');
+
         let datUpdate = new Date();
         await connection('convenios').where('cnvId', id)   
         .update({
@@ -166,8 +169,8 @@ module.exports = {
             cnvCidade,
             cnvEstado,
             cnvCep,
-            cnvPassword,
-            cnvCanPassword          
+            cnvPassword: snhConvenio,
+            cnvCanPassword: snhCancelamento          
         });
            
         return response.status(204).send();
