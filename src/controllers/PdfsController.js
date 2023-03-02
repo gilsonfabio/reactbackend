@@ -61,7 +61,7 @@ module.exports = {
     async pdfVctCmpSrv (request, response) {
         let inicio = request.params.datInicial;
         let final = request.params.datFinal;
-        let servidor = request.params.codServidor;
+        let servidor = request.params.srvId;
         let status = 'A';
         
         //console.log(inicio);
@@ -141,7 +141,35 @@ module.exports = {
             .select(['compras.*', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
 
         return response.json(emicompras);
-    }, 
+    },
+    
+    async pdfEmiCmpSrv (request, response) {
+        let inicio = request.params.datInicial;
+        let final = request.params.datFinal;
+        let convenio = request.params.cnvId;
+        let status = 'A';
+                               
+        const datNow = moment().format('DD-MM-YYYY');
+        const horNow = moment().format('hh:mm:ss');  
+
+        let datIni = inicio.split('/').reverse().join('-');
+        let datFin = final.split('/').reverse().join('-');
+       
+        //console.log('Inicio', datIni);
+        //console.log('Final:', datFin);
+        //console.log('Convenio:', convenio);
+
+        const emicompras = await connection('compras')
+            .where('cmpEmissao','>=', datIni)
+            .where('cmpEmissao','<=', datFin)
+            .where('cmpStatus', status)
+            .where('cmpConvenio', convenio)
+            .join('servidores', 'usrId', 'compras.cmpServidor')
+            .join('convenios', 'cnvId', 'compras.cmpConvenio')
+            .select(['compras.*', 'servidores.usrNome', 'convenios.cnvNomFantasia']);
+
+        return response.json(emicompras);
+    },
 
     async pdfVctOrgao (request, response) {
         //let datSearch = moment('2022-01-15').format('YYYY-MM-DD');

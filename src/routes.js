@@ -138,9 +138,10 @@ routes.get('/parcelas/:tipUser', ParcelasController.parcelas);
 routes.get('/pdfCmpEmissao', PdfsController.pdfCmpEmissao);
 routes.get('/pdfCmpEmis/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfCmpEmis);
 routes.get('/pdfVctCompras/:dataInicio/:dataFinal/:cnpjCnv/:cpfSrv', PdfsController.pdfVctCompras);
-routes.get('/pdfVctCmpSrv/:datInicial/:datFinal/:codServidor', PdfsController.pdfVctCmpSrv);
+routes.get('/pdfVctCmpSrv/:datInicial/:datFinal/:srvId', PdfsController.pdfVctCmpSrv);
 routes.get('/pdfVctCmpCnv/:datInicial/:datFinal/:cnvId', PdfsController.pdfVctCmpCnv);
 routes.get('/pdfEmiCmpCnv/:datInicial/:datFinal/:cnvId', PdfsController.pdfEmiCmpCnv);
+routes.get('/pdfEmiCmpSrv:datInicial/:datFinal/:srvId', PdfsController.pdfEmiCmpSrv);
 
 routes.get('/pdfExtAdm/:dataInicial', PdfsController.pdfExtAdm);
 
