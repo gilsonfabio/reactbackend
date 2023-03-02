@@ -99,6 +99,8 @@ module.exports = {
         //console.log('Mes:', month);
         //console.log('Dia:', day);
 
+        //console.log('passou na compra')
+
         const horProcess = moment().format('hh:mm:ss');        
         const idCompra = cmpId;    
         
@@ -153,6 +155,8 @@ module.exports = {
                 parStaParcela: staParcela,                
             });
 
+            //console.log('passou na parcela') 
+
             const cnv = await connection('convenios')
             .where('cnvId',convenio)
             .join('atividades', 'atvId', 'convenios.cnvAtividade')
@@ -168,26 +172,34 @@ module.exports = {
 
             //console.log('mes totalizador de vendas convenio:', mesParc);
 
-            const updConv = await connection('totVdaCnv')
+            const atuCnv = await connection('totVdaCnv')
             .where('tcnvId',convenio)
             .where('tcnvMes',mesParc)
             .where('tcnvAno',anoParc)
-            .increment({tcnvVlrTotal: auxParcela})
-            .increment({tcnvVlrTaxa: auxTaxa})
-            .increment({tcnvVlrLiquido: auxLiquido})
-            .increment({tcnvVlrSistema: auxSistema});
+            .select('tcnvVlrTotal');
 
-            if (!updConv) {
+            if(!atuCnv) {
                 const [totaliza] = await connection('totVdaCnv').insert({
                     tcnvId: convenio,
-                    tcnvAno: year,
-                    tcnvMes: month,
+                    tcnvAno: anoParc,
+                    tcnvMes: mesParc,
                     tcnvVlrTotal: auxParcela,
                     tcnvVlrTaxa: auxTaxa,
                     tcnvVlrLiquido: auxLiquido,
                     tcnvVlrSistema: auxSistema,                
                 });
-            }
+            }else {
+                const updConv = await connection('totVdaCnv')
+                .where('tcnvId',convenio)
+                .where('tcnvMes',mesParc)
+                .where('tcnvAno',anoParc)
+                .increment({tcnvVlrTotal: auxParcela})
+                .increment({tcnvVlrTaxa: auxTaxa})
+                .increment({tcnvVlrLiquido: auxLiquido})
+                .increment({tcnvVlrSistema: auxSistema});
+            };          
+
+            //console.log('totalizou convenio')
 
             const usr = await connection('servidores')
             .where('usrId',servidor)
@@ -199,12 +211,13 @@ module.exports = {
             //console.log('ano:',anoParc);
 
             const updServ = await connection('usrSaldo')
-                .where('usrServ',nroCartao)
-                .where('usrMes',mesParc)
-                .where('usrAno',anoParc)
-                .increment({usrVlrUsado: vlrParcela})
-                .decrement({usrVlrDisponivel: vlrParcela});
-        
+            .where('usrServ',nroCartao)
+            .where('usrMes',mesParc)
+            .where('usrAno',anoParc)
+            .increment({usrVlrUsado: vlrParcela})
+            .decrement({usrVlrDisponivel: vlrParcela});        
+
+            //console.log('atualizou saldo servidor')
         }
 
         const conv = await connection('convenios')
@@ -265,6 +278,8 @@ module.exports = {
             `,
         });
         //console.log(mailSent);
+
+        console.log('enviou email da compra')
                         
         return response.status(200).send();  
     },    
